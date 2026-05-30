@@ -4,9 +4,9 @@
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg)
-![Vibe Coding](https://img.shields.io/badge/built%20with-vibe%20coding-purple.svg)
+![Kimi Code](https://img.shields.io/badge/built%20with-vibe%20coding-purple.svg)
 
-> 这是一个 **Vibe Coding** 项目 —— 由人类描述需求，AI 辅助实现，在对话中自然生长出来的工具。
+> 该项目为 **Vibe Coding** 项目
 > 
 > 💜 爱来自 Kimi Code
 
