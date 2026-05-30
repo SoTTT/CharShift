@@ -32,17 +32,27 @@ jobs:
       - name: Build (No WebView2)
         run: cargo tauri build
 
+      - name: Collect (No WebView2)
+        run: |
+          mkdir -p dist/windows
+          copy target/release/charshift.exe dist/windows/charshift-x64.exe
+          copy target/release/bundle/nsis/*.exe dist/windows/charshift-x64-setup.exe
+        shell: pwsh
+
       - name: Build (WebView2 Bootstrapper)
         run: cargo tauri build --config ./build-scripts/config/webview2-embed.json
+
+      - name: Collect (WebView2 Bootstrapper)
+        run: |
+          copy target/release/bundle/nsis/*.exe dist/windows/charshift-x64-webview2-setup.exe
+        shell: pwsh
 
       - name: Build (WebView2 Offline)
         run: cargo tauri build --config ./build-scripts/config/webview2-offline.json
 
-      - name: Collect artifacts
+      - name: Collect (WebView2 Offline)
         run: |
-          mkdir -p dist/windows
-          copy target/release/charshift.exe dist/windows/charshift-x64.exe
-          copy target/release/bundle/nsis/*.exe dist/windows/
+          copy target/release/bundle/nsis/*.exe dist/windows/charshift-x64-webview2-full-setup.exe
         shell: pwsh
 
       - name: Upload Windows artifacts
