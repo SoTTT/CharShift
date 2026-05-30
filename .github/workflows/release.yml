@@ -59,6 +59,28 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Generate Linux icon
+        run: |
+          python3 -c "
+          import struct, zlib
+          w, h = 512, 512
+          png = b'\x89PNG\r\n\x1a\n'
+          ihdr = struct.pack('>IIBBBBB', w, h, 8, 6, 0, 0, 0)
+          crc = zlib.crc32(b'IHDR' + ihdr) & 0xffffffff
+          png += struct.pack('>I', len(ihdr)) + b'IHDR' + ihdr + struct.pack('>I', crc)
+          raw = b''
+          for y in range(h):
+              raw += b'\x00'
+              for x in range(w):
+                  raw += bytes([255, 132, 0, 255])
+          comp = zlib.compress(raw)
+          crc = zlib.crc32(b'IDAT' + comp) & 0xffffffff
+          png += struct.pack('>I', len(comp)) + b'IDAT' + comp + struct.pack('>I', crc)
+          crc = zlib.crc32(b'IEND') & 0xffffffff
+          png += struct.pack('>I', 0) + b'IEND' + struct.pack('>I', crc)
+          open('icons/icon.png', 'wb').write(png)
+          "
+
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
 
