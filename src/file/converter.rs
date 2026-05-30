@@ -1,7 +1,7 @@
+use crate::types::{Encoding, NodeId};
 use std::fs;
 use std::io::{Read, Write};
 use std::path::Path;
-use crate::types::{Encoding, NodeId};
 
 #[derive(Debug, Clone)]
 pub struct ConversionResult {

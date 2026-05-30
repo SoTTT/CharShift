@@ -33,6 +33,8 @@ const emptyEl = $('empty-state');
 const btnSettings = $('btn-settings');
 const btnOpen = $('btn-open');
 const btnClear = $('btn-clear');
+const btnExpandAll = $('btn-expand-all');
+const btnCollapseAll = $('btn-collapse-all');
 const btnConvert = $('btn-convert');
 const encodingTrigger = $('encoding-trigger');
 const encodingDropdown = $('encoding-dropdown');
@@ -338,10 +340,31 @@ function renderTree() {
 // ========================================
 
 /// 切换目录展开/折叠状态
+/// 切换单个目录的展开/折叠状态
 function toggleDir(id) {
   const node = nodes.get(id);
   if (!node) return;
   node.is_expanded = !node.is_expanded;
+  renderTree();
+}
+
+/// 展开所有目录节点（递归展开整棵树）
+function expandAll() {
+  for (const node of nodes.values()) {
+    if (node.node_type === 'Directory') {
+      node.is_expanded = true;
+    }
+  }
+  renderTree();
+}
+
+/// 收起所有目录节点（递归收起整棵树）
+function collapseAll() {
+  for (const node of nodes.values()) {
+    if (node.node_type === 'Directory') {
+      node.is_expanded = false;
+    }
+  }
   renderTree();
 }
 
@@ -635,6 +658,16 @@ btnClear.addEventListener('click', async () => {
   renderTree();
   updateCounts();
   setStatus('idle', '就绪');
+});
+
+// 展开全部目录
+btnExpandAll.addEventListener('click', () => {
+  expandAll();
+});
+
+// 收起全部目录
+btnCollapseAll.addEventListener('click', () => {
+  collapseAll();
 });
 
 // "开始转换"按钮：批量转换选中的文本文件
