@@ -1,14 +1,28 @@
 use crate::types::NodeId;
 
-const SAMPLE_SIZE: usize = 8 * 1024;
-const CONFIDENCE_THRESHOLD: f32 = 0.6;
+// 编码检测常量
+const SAMPLE_SIZE: usize = 8 * 1024;     // 采样大小：读取文件前 8KB
+const CONFIDENCE_THRESHOLD: f32 = 0.6;   // chardet 置信度阈值
 
+// ========================================
+// 检测结果结构
+// ========================================
+
+/// 单个文件的编码检测结果
 #[derive(Debug, Clone)]
 pub struct DetectionResult {
     pub node_id: NodeId,
+    /// 检测到的编码名称，如 "UTF-8"；检测失败则为 None
     pub encoding: Option<String>,
 }
 
+// ========================================
+// BOM 检测
+// ========================================
+
+/// 检查数据头是否有已知的 BOM（Byte Order Mark）
+/// 
+/// 支持的 BOM：UTF-8-BOM、UTF-16LE、UTF-16BE、UTF-32BE
 fn detect_bom(data: &[u8]) -> Option<String> {
     if data.starts_with(&[0xEF, 0xBB, 0xBF]) {
         Some("UTF-8-BOM".to_string())
@@ -23,6 +37,11 @@ fn detect_bom(data: &[u8]) -> Option<String> {
     }
 }
 
+// ========================================
+// chardet 结果映射
+// ========================================
+
+/// 将 chardet 库返回的 charset 名称映射为内部编码名称
 fn chardet_to_encoding(charset: &str) -> Option<String> {
     let name = charset.to_lowercase();
     match name.as_str() {
@@ -38,9 +57,24 @@ fn chardet_to_encoding(charset: &str) -> Option<String> {
     }
 }
 
+// ========================================
+// 编码检测主函数
+// ========================================
+
+/// 检测单个文件的编码
+/// 
+/// 检测策略（按优先级）：
+/// 1. BOM 检测 — 检查文件头是否有已知 BOM
+/// 2. chardet 频率分析 — 读取前 8KB 进行字符频率统计
+/// 3. UTF-8 启发式 — 若 chardet 置信度不足，尝试按 UTF-8 解码
+/// 
+/// # 参数
+/// - `node_id`: 文件节点 ID（用于返回结果关联）
+/// - `path`: 文件路径
 pub fn detect_encoding(node_id: NodeId, path: &std::path::Path) -> DetectionResult {
     use std::io::Read;
 
+    // 打开文件，失败则返回 None
     let mut file = match std::fs::File::open(path) {
         Ok(f) => f,
         Err(_) => {
@@ -51,6 +85,7 @@ pub fn detect_encoding(node_id: NodeId, path: &std::path::Path) -> DetectionResu
         }
     };
 
+    // 读取前 8KB 作为分析样本
     let mut buffer = vec![0u8; SAMPLE_SIZE];
     let n = match file.read(&mut buffer) {
         Ok(n) => n,
@@ -63,7 +98,7 @@ pub fn detect_encoding(node_id: NodeId, path: &std::path::Path) -> DetectionResu
     };
     buffer.truncate(n);
 
-    // 1. BOM detection
+    // 策略 1: BOM 检测（最快最准确）
     if let Some(enc) = detect_bom(&buffer) {
         return DetectionResult {
             node_id,
@@ -71,6 +106,7 @@ pub fn detect_encoding(node_id: NodeId, path: &std::path::Path) -> DetectionResu
         };
     }
 
+    // 空文件默认当作 UTF-8
     if buffer.is_empty() {
         return DetectionResult {
             node_id,
@@ -78,7 +114,7 @@ pub fn detect_encoding(node_id: NodeId, path: &std::path::Path) -> DetectionResu
         };
     }
 
-    // 2. chardet analysis
+    // 策略 2: chardet 频率分析
     let (charset, confidence, _language) = chardet::detect(&buffer);
 
     if confidence >= CONFIDENCE_THRESHOLD {
@@ -90,7 +126,7 @@ pub fn detect_encoding(node_id: NodeId, path: &std::path::Path) -> DetectionResu
         }
     }
 
-    // 3. Heuristic fallback: try UTF-8
+    // 策略 3: 启发式回退 — 尝试按 UTF-8 解码，成功则标记 UTF-8
     if std::str::from_utf8(&buffer).is_ok() {
         return DetectionResult {
             node_id,
@@ -98,6 +134,7 @@ pub fn detect_encoding(node_id: NodeId, path: &std::path::Path) -> DetectionResu
         };
     }
 
+    // 所有策略均失败
     DetectionResult {
         node_id,
         encoding: None,

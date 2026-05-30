@@ -1,18 +1,32 @@
-// ===== State =====
-let nodes = new Map(); // id -> node
-let rootNodes = [];    // root node ids
-let currentPath = '';
-let isScanning = false;
-let isConverting = false;
-let lastClickedFileId = null;    // 用于 Shift+批量选中的锚点
-let visibleTextFileIds = [];     // 当前可见的文本文件 ID 列表（按渲染顺序）
+// ========================================
+// 全局状态管理
+// ========================================
 
+// 所有文件节点映射：id -> node
+let nodes = new Map();
+// 根节点 ID 列表（顶层文件/目录）
+let rootNodes = [];
+// 当前扫描的目录路径
+let currentPath = '';
+// 是否正在扫描中
+let isScanning = false;
+// 是否正在转换中
+let isConverting = false;
+// 最后一次单击的文本文件 ID（Shift+批量选中的锚点）
+let lastClickedFileId = null;
+// 当前可见的文本文件 ID 列表（按渲染顺序）
+let visibleTextFileIds = [];
+
+// Tauri IPC 调用函数（如果不可用则报错）
 const { invoke } = window.__TAURI__?.core || {};
 if (!invoke) {
   console.error('Tauri API not available');
 }
 
-// ===== DOM refs =====
+// ========================================
+// DOM 元素引用
+// ========================================
+
 const $ = id => document.getElementById(id);
 const treeEl = $('file-tree');
 const emptyEl = $('empty-state');
@@ -39,7 +53,11 @@ const settingExcludeBinary = $('setting-exclude-binary');
 const settingLockFiles = $('setting-lock-files');
 const settingsCloseBtn = $('settings-close-btn');
 
-// ===== Settings =====
+// ========================================
+// 设置管理（localStorage 持久化）
+// ========================================
+
+/// 从 localStorage 加载设置并应用到 UI
 function loadSettings() {
   try {
     const raw = localStorage.getItem('cc_settings');
@@ -53,10 +71,11 @@ function loadSettings() {
       }
     }
   } catch (_) {
-    // ignore
+    // 读取失败时静默忽略，使用默认设置
   }
 }
 
+/// 将当前设置保存到 localStorage
 function saveSettings() {
   try {
     localStorage.setItem('cc_settings', JSON.stringify({
@@ -64,20 +83,23 @@ function saveSettings() {
       lockFiles: settingLockFiles.checked,
     }));
   } catch (_) {
-    // ignore
+    // 保存失败时静默忽略
   }
 }
 
+/// 打开设置面板
 function openSettings() {
   overlay.classList.remove('hidden');
   settingsDialog.classList.remove('hidden');
 }
 
+/// 关闭设置面板
 function closeSettings() {
   overlay.classList.add('hidden');
   settingsDialog.classList.add('hidden');
 }
 
+// 设置面板事件绑定
 btnSettings.addEventListener('click', openSettings);
 settingsCloseBtn.addEventListener('click', closeSettings);
 overlay.addEventListener('click', () => {
@@ -88,6 +110,7 @@ overlay.addEventListener('click', () => {
 settingExcludeBinary.addEventListener('change', saveSettings);
 settingLockFiles.addEventListener('change', async () => {
   saveSettings();
+  // 关闭锁定时立即解锁所有文件
   if (!settingLockFiles.checked) {
     try {
       await invoke('unlock_all_files');
@@ -97,12 +120,19 @@ settingLockFiles.addEventListener('change', async () => {
   }
 });
 
-// ===== Status =====
+// ========================================
+// 状态栏
+// ========================================
+
+/// 设置状态栏显示内容和样式
+/// @param state CSS 类名（idle/scanning/detecting/converting/error/success）
+/// @param text 状态文字
 function setStatus(state, text) {
   statusDot.className = 'status-dot ' + state;
   statusText.textContent = text;
 }
 
+/// 更新统计信息（已选择数量、总节点数）并控制转换按钮状态
 function updateCounts() {
   const total = nodes.size;
   const selected = Array.from(nodes.values()).filter(n =>
@@ -118,7 +148,14 @@ function updateCounts() {
   btnConvert.disabled = !hasSelected || isConverting;
 }
 
-// ===== Dialog =====
+// ========================================
+// 对话框
+// ========================================
+
+/// 显示提示对话框
+/// @param type 图标类型（success/error）
+/// @param title 标题
+/// @param body 正文内容
 function showDialog(type, title, body) {
   dialogIcon.className = 'dialog-icon ' + type;
   dialogTitle.textContent = title;
@@ -127,6 +164,7 @@ function showDialog(type, title, body) {
   dialog.classList.remove('hidden');
 }
 
+/// 隐藏提示对话框
 function hideDialog() {
   overlay.classList.add('hidden');
   dialog.classList.add('hidden');
@@ -135,7 +173,13 @@ function hideDialog() {
 dialogBtn.addEventListener('click', hideDialog);
 overlay.addEventListener('click', hideDialog);
 
-// ===== Tree Helpers =====
+// ========================================
+// 文件树辅助函数
+// ========================================
+
+/// 递归收集指定目录下的所有文本文件 ID（含嵌套子目录）
+/// @param dirId 目录节点 ID
+/// @returns 文本文件 ID 数组
 function getAllTextFileIds(dirId) {
   const result = [];
   const node = nodes.get(dirId);
@@ -152,6 +196,8 @@ function getAllTextFileIds(dirId) {
   return result;
 }
 
+/// 获取目录复选框的当前状态
+/// @returns 'checked' 全选 / 'indeterminate' 部分选 / 'unchecked' 全不选 / 'none' 无子文件
 function getDirCheckboxState(dirId) {
   const textFileIds = getAllTextFileIds(dirId);
   if (textFileIds.length === 0) return 'none';
@@ -161,10 +207,16 @@ function getDirCheckboxState(dirId) {
   return 'unchecked';
 }
 
-// ===== Tree Rendering =====
+// ========================================
+// 文件树渲染
+// ========================================
+
+/// 根据当前 nodes 数据重新渲染文件树
+/// 同时收集 visibleTextFileIds 供 Shift+批量选中使用
 function renderTree() {
   treeEl.innerHTML = '';
 
+  // 空状态：没有文件时显示提示
   if (nodes.size === 0) {
     treeEl.appendChild(emptyEl);
     emptyEl.style.display = 'flex';
@@ -173,6 +225,7 @@ function renderTree() {
 
   emptyEl.style.display = 'none';
 
+  // 递归遍历节点树，创建 DOM 元素
   const visit = (nodeIds, depth) => {
     for (const id of nodeIds) {
       const node = nodes.get(id);
@@ -190,6 +243,7 @@ function renderTree() {
       el.appendChild(indent);
 
       if (node.node_type === 'Directory') {
+        // 目录节点：缩进 + 复选框 + 展开箭头 + 名称
         el.classList.add('dir-item');
         indent.style.width = (depth * 20) + 'px';
 
@@ -210,6 +264,7 @@ function renderTree() {
         name.textContent = node.name;
         el.appendChild(name);
       } else {
+        // 文件节点：缩进 + 复选框 + 文件名 + 编码显示
         indent.style.width = ((depth + 1) * 20 + 10) + 'px';
 
         const checkbox = document.createElement('div');
@@ -245,7 +300,7 @@ function renderTree() {
         el.appendChild(enc);
       }
 
-      // Remove button for all nodes
+      // 所有节点都显示移除按钮
       const removeBtn = document.createElement('div');
       removeBtn.className = 'remove-btn';
       removeBtn.textContent = '移除';
@@ -253,6 +308,7 @@ function renderTree() {
 
       treeEl.appendChild(el);
 
+      // 目录展开时递归渲染子节点
       if (node.node_type === 'Directory' && node.is_expanded && node.children.length > 0) {
         visit(node.children, depth + 1);
       }
@@ -277,6 +333,11 @@ function renderTree() {
   collectVisible(rootNodes);
 }
 
+// ========================================
+// 文件树交互
+// ========================================
+
+/// 切换目录展开/折叠状态
 function toggleDir(id) {
   const node = nodes.get(id);
   if (!node) return;
@@ -284,6 +345,7 @@ function toggleDir(id) {
   renderTree();
 }
 
+/// 切换单个文本文件的选中状态
 function toggleFile(id) {
   const node = nodes.get(id);
   if (!node || node.node_type !== 'TextFile') return;
@@ -293,6 +355,8 @@ function toggleFile(id) {
   updateCounts();
 }
 
+/// Shift+点击批量选中：从锚点到目标范围内的所有可见文本文件统一状态
+/// @param targetId 当前点击的文件 ID
 function doShiftSelect(targetId) {
   const targetNode = nodes.get(targetId);
   if (!targetNode || targetNode.node_type !== 'TextFile') return;
@@ -325,6 +389,7 @@ function doShiftSelect(targetId) {
   lastClickedFileId = targetId;
 }
 
+/// 切换目录下所有文本文件的全选/全不选状态
 function toggleDirSelect(id) {
   const node = nodes.get(id);
   if (!node || node.node_type !== 'Directory') return;
@@ -340,17 +405,18 @@ function toggleDirSelect(id) {
   updateCounts();
 }
 
+/// 递归移除节点及其所有子节点
 function removeNode(id) {
   const node = nodes.get(id);
   if (!node) return;
-  // Recursively remove all children first
+  // 先递归移除所有子节点
   if (node.node_type === 'Directory') {
     const childrenToRemove = [...node.children];
     for (const childId of childrenToRemove) {
       removeNode(childId);
     }
   }
-  // Remove from parent's children list
+  // 从父节点的 children 列表中移除
   if (node.parent_id !== null) {
     const parent = nodes.get(node.parent_id);
     if (parent) {
@@ -359,10 +425,11 @@ function removeNode(id) {
   } else {
     rootNodes = rootNodes.filter(rid => rid !== id);
   }
-  // Remove from nodes map
+  // 从 nodes map 中移除
   nodes.delete(id);
 }
 
+/// 递归收集指定节点（含子节点）下所有文本文件的路径
 function collectTextFilePaths(startNode) {
   const paths = [];
   if (startNode.node_type === 'TextFile') {
@@ -386,7 +453,7 @@ treeEl.addEventListener('click', async (e) => {
   const node = nodes.get(id);
   if (!node) return;
 
-  // Remove button clicked
+  // 移除按钮被点击
   if (e.target.closest('.remove-btn')) {
     const pathsToUnlock = collectTextFilePaths(node);
     if (pathsToUnlock.length > 0) {
@@ -402,7 +469,7 @@ treeEl.addEventListener('click', async (e) => {
     return;
   }
 
-  // Checkbox clicked
+  // 复选框被点击
   if (e.target.closest('.checkbox')) {
     if (node.node_type === 'Directory') {
       toggleDirSelect(id);
@@ -418,7 +485,7 @@ treeEl.addEventListener('click', async (e) => {
     return;
   }
 
-  // Chevron clicked
+  // 展开箭头被点击
   if (e.target.closest('.chevron')) {
     if (node.node_type === 'Directory') {
       toggleDir(id);
@@ -426,7 +493,7 @@ treeEl.addEventListener('click', async (e) => {
     return;
   }
 
-  // Click on row itself
+  // 点击行本身（非按钮/复选框/箭头区域）
   if (node.node_type === 'Directory') {
     toggleDir(id);
   } else if (node.node_type === 'TextFile') {
@@ -440,7 +507,11 @@ treeEl.addEventListener('click', async (e) => {
   }
 });
 
-// ===== Actions =====
+// ========================================
+// 主要操作
+// ========================================
+
+/// 为扫描结果重新分配 ID，避免与现有节点冲突
 function remapScannedNodes(scanned) {
   let maxId = 0;
   for (const n of nodes.values()) {
@@ -462,6 +533,7 @@ function remapScannedNodes(scanned) {
   return remapped;
 }
 
+/// 仅更新指定节点在 DOM 中的编码显示（避免整树重渲染）
 function updateNodeEncoding(id, encoding) {
   const item = treeEl.querySelector(`.tree-item[data-id="${id}"]`);
   if (!item) return;
@@ -470,6 +542,7 @@ function updateNodeEncoding(id, encoding) {
   encEl.textContent = encoding || 'UTF-8';
 }
 
+// "打开目录"按钮：扫描并检测编码
 btnOpen.addEventListener('click', async () => {
   if (isScanning || isConverting) return;
 
@@ -547,6 +620,7 @@ btnOpen.addEventListener('click', async () => {
   }
 });
 
+// "清空"按钮：移除所有节点并解锁文件
 btnClear.addEventListener('click', async () => {
   if (isConverting) return;
   try {
@@ -563,6 +637,7 @@ btnClear.addEventListener('click', async () => {
   setStatus('idle', '就绪');
 });
 
+// "开始转换"按钮：批量转换选中的文本文件
 btnConvert.addEventListener('click', async () => {
   if (isConverting) return;
 
@@ -630,7 +705,10 @@ btnConvert.addEventListener('click', async () => {
   }
 });
 
-// ===== Encoding Dropdown =====
+// ========================================
+// 编码下拉框
+// ========================================
+
 if (encodingTrigger && encodingDropdown) {
   encodingTrigger.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -663,9 +741,13 @@ if (encodingTrigger && encodingDropdown) {
   });
 }
 
-// ===== Drag & Drop =====
+// ========================================
+// 拖放处理
+// ========================================
+
 const dropOverlay = $('drop-overlay');
 
+/// 获取下一个可用的节点 ID
 function getNextId() {
   let maxId = 0;
   for (const n of nodes.values()) {
@@ -674,6 +756,7 @@ function getNextId() {
   return maxId + 1;
 }
 
+/// 检查指定路径是否已存在于节点列表中
 function pathExists(path) {
   for (const n of nodes.values()) {
     if (n.path === path) return true;
@@ -681,6 +764,7 @@ function pathExists(path) {
   return false;
 }
 
+/// 处理拖放的文件路径列表：检测文本文件、创建节点、检测编码、可选锁定
 async function processDroppedFiles(paths) {
   if (paths.length === 0) return;
 
@@ -783,7 +867,10 @@ async function processDroppedFiles(paths) {
   }
 }
 
-// ===== Drag & Drop =====
+// ========================================
+// 拖放事件监听
+// ========================================
+
 let dragCounter = 0;
 
 function showDropOverlay() {
@@ -798,31 +885,31 @@ function hideDropOverlay() {
   }
 }
 
-// Tauri v2 native drag-drop events (primary mechanism)
+// Tauri v2 原生拖放事件（主要机制）
 let dragOverTimer = null;
 
 if (window.__TAURI__?.event) {
   const { listen } = window.__TAURI__.event;
 
-  // Show overlay on drag-enter (works on macOS/Linux, sometimes on Windows)
+  // drag-enter 时显示遮罩（macOS/Linux 有效，Windows 有时无效）
   listen('tauri://drag-enter', () => {
     showDropOverlay();
   });
 
-  // Hide overlay on drag-leave
+  // drag-leave 时隐藏遮罩
   listen('tauri://drag-leave', () => {
     hideDropOverlay();
   });
 
-  // drag-over fires continuously while hovering; use it as fallback
-  // to keep overlay visible if drag-enter doesn't fire (Windows bug)
+  // drag-over 会持续触发，用作 fallback：
+  // 如果 drag-enter 没触发（Windows bug），靠 drag-over 保持遮罩显示
   listen('tauri://drag-over', () => {
     showDropOverlay();
     clearTimeout(dragOverTimer);
     dragOverTimer = setTimeout(hideDropOverlay, 300);
   });
 
-  // Handle actual file drop
+  // 实际文件拖放完成时处理
   listen('tauri://drag-drop', async (event) => {
     clearTimeout(dragOverTimer);
     hideDropOverlay();
@@ -834,7 +921,7 @@ if (window.__TAURI__?.event) {
   });
 }
 
-// HTML5 drag-and-drop (fallback, only works when dragDropEnabled is false)
+// HTML5 拖放（fallback，仅在 dragDropEnabled 为 false 时有效）
 document.addEventListener('dragenter', (e) => {
   e.preventDefault();
   dragCounter++;
@@ -859,6 +946,7 @@ document.addEventListener('drop', async (e) => {
   hideDropOverlay();
   if (isScanning || isConverting) return;
 
+  // 从 dataTransfer 中提取文件路径
   const paths = [];
   const dtFiles = e.dataTransfer?.files;
   if (dtFiles) {
@@ -881,7 +969,10 @@ document.addEventListener('drop', async (e) => {
   }
 });
 
-// ===== Init =====
+// ========================================
+// 初始化
+// ========================================
+
 loadSettings();
 renderTree();
 updateCounts();

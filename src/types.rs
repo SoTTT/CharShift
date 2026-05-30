@@ -1,7 +1,13 @@
 use serde::{Deserialize, Serialize};
 
+/// 文件树节点 ID 类型别名
 pub type NodeId = u64;
 
+// ========================================
+// 支持的编码枚举
+// ========================================
+
+/// 前后端共享的编码类型枚举
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum Encoding {
     Utf8,
@@ -16,6 +22,7 @@ pub enum Encoding {
 }
 
 impl Encoding {
+    /// 返回所有支持的编码列表
     pub fn all() -> Vec<Encoding> {
         vec![
             Encoding::Utf8,
@@ -30,6 +37,7 @@ impl Encoding {
         ]
     }
 
+    /// 返回编码的显示名称（与前端下拉框保持一致）
     pub fn name(&self) -> &'static str {
         match self {
             Encoding::Utf8 => "UTF-8",
@@ -44,6 +52,7 @@ impl Encoding {
         }
     }
 
+    /// 返回该编码对应的 BOM 字节序列（如有）
     pub fn bom_bytes(&self) -> Option<&'static [u8]> {
         match self {
             Encoding::Utf8Bom => Some(&[0xEF, 0xBB, 0xBF]),
@@ -53,6 +62,7 @@ impl Encoding {
         }
     }
 
+    /// 映射到 encoding_rs 库中对应的编码实例
     pub fn to_encoding_rs(&self) -> &'static encoding_rs::Encoding {
         match self {
             Encoding::Utf8 | Encoding::Utf8Bom => encoding_rs::UTF_8,
@@ -66,6 +76,7 @@ impl Encoding {
         }
     }
 
+    /// 根据编码名称字符串解析为 Encoding 枚举
     pub fn from_name(name: &str) -> Option<Encoding> {
         match name {
             "UTF-8" => Some(Encoding::Utf8),
@@ -82,6 +93,11 @@ impl Encoding {
     }
 }
 
+// ========================================
+// 文件树节点类型
+// ========================================
+
+/// 文件树节点的类型分类
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum NodeType {
     Directory,
@@ -90,18 +106,26 @@ pub enum NodeType {
     UnknownEncoding,
 }
 
+/// 文件树中的一个节点（文件或目录）
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct FileNode {
     pub id: NodeId,
     pub name: String,
     pub path: String,
     pub node_type: NodeType,
+    /// 检测到的编码名称（如 "UTF-8"），未检测则为 None
     pub encoding: Option<String>,
+    /// 目录节点是否展开（前端树形控件用）
     pub is_expanded: bool,
+    /// 是否被用户选中（仅文本文件有效）
     pub is_selected: bool,
+    /// 是否正在转换中（前端状态用）
     pub is_converting: bool,
+    /// 转换失败的错误信息
     pub conversion_error: Option<String>,
+    /// 父节点 ID（根节点为 None）
     pub parent_id: Option<NodeId>,
+    /// 子节点 ID 列表（仅目录有效）
     pub children: Vec<NodeId>,
     /// 扫描时的文件大小（字节），用于转换前一致性校验
     pub file_size: Option<u64>,
