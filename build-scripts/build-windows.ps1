@@ -1,6 +1,6 @@
 #requires -Version 5.1
 <#
-  Code Convertor - Windows 打包脚本
+  CharShift - Windows 打包脚本
   生成 3 种变体：
     1. 不自带 WebView2（假设系统已安装）
     2. 嵌入 WebView2 Bootstrapper（安装时自动下载，+~2MB）
@@ -28,7 +28,7 @@ $BundleDir = "$ProjectRoot/target/release/bundle"
 New-Item -ItemType Directory -Force -Path $OutputDir | Out-Null
 
 Write-Host "========================================" -ForegroundColor Cyan
-Write-Host "  Code Convertor Windows Build Script" -ForegroundColor Cyan
+Write-Host "  CharShift Windows Build Script" -ForegroundColor Cyan
 Write-Host "  Version: $Version" -ForegroundColor Cyan
 Write-Host "========================================" -ForegroundColor Cyan
 
@@ -63,11 +63,11 @@ function Build-Variant {
     }
 
     # 复制产物
-    $SrcExe = "$ProjectRoot/target/release/code-convertor.exe"
+    $SrcExe = "$ProjectRoot/target/release/charshift.exe"
     $SrcNsis = "$BundleDir/nsis/*.exe"
 
     if (Test-Path $SrcExe) {
-        $DestExe = "$OutputDir/code-convertor-${Version}-x64${Suffix}.exe"
+        $DestExe = "$OutputDir/charshift-${Version}-x64${Suffix}.exe"
         Copy-Item $SrcExe $DestExe -Force
         $Size = (Get-Item $DestExe).Length / 1MB
         Write-Host "  [OK] Portable: $DestExe ($([math]::Round($Size,1)) MB)" -ForegroundColor Green
@@ -75,7 +75,7 @@ function Build-Variant {
 
     $NsisFiles = Get-ChildItem $SrcNsis -ErrorAction SilentlyContinue
     if ($NsisFiles) {
-        $DestNsis = "$OutputDir/code-convertor-${Version}-x64${Suffix}-setup.exe"
+        $DestNsis = "$OutputDir/charshift-${Version}-x64${Suffix}-setup.exe"
         Copy-Item $NsisFiles[0].FullName $DestNsis -Force
         $Size = (Get-Item $DestNsis).Length / 1MB
         Write-Host "  [OK] Installer: $DestNsis ($([math]::Round($Size,1)) MB)" -ForegroundColor Green

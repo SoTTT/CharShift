@@ -1,6 +1,6 @@
 # 编码转换桌面程序 - 设计文档
 
-**名称**: Code Convertor  
+**名称**: CharShift  
 **技术栈**: Rust + Iced (Native GUI)  
 **目标平台**: Windows, Linux  
 **构建目标**: 单文件可执行程序  

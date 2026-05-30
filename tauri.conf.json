@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2.0.0",
-  "productName": "Code Convertor",
+  "productName": "CharShift",
   "version": "0.1.0",
   "identifier": "com.codeconvertor.desktop",
   "build": {
@@ -10,7 +10,7 @@
     "withGlobalTauri": true,
     "windows": [
       {
-        "title": "Code Convertor",
+        "title": "CharShift",
         "width": 960,
         "height": 640,
         "resizable": true,
