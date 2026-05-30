@@ -1,0 +1,18 @@
+/target
+/dist
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# Temp files
+*.tmp
+*.log
