@@ -98,7 +98,7 @@ impl Encoding {
 // ========================================
 
 /// 文件树节点的类型分类
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum NodeType {
     Directory,
     TextFile,

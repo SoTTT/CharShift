@@ -198,3 +198,108 @@ pub fn scan_directory(path: &Path, exclude_binary: bool) -> Result<Vec<FileNode>
     info!(text_files = nodes.iter().filter(|n| matches!(n.node_type, NodeType::TextFile)).count(), binary_files = nodes.iter().filter(|n| matches!(n.node_type, NodeType::BinaryFile)).count(), dirs = nodes.iter().filter(|n| matches!(n.node_type, NodeType::Directory)).count(), "扫描完成");
     Ok(nodes)
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::fs;
+    use tempfile::TempDir;
+
+    #[test]
+    fn test_scan_text_and_binary() {
+        let dir = TempDir::new().unwrap();
+        fs::write(dir.path().join("hello.txt"), "Hello, world!").unwrap();
+        fs::write(dir.path().join("image.bin"), vec![0x00, 0x01, 0x02, 0xFF]).unwrap();
+
+        let nodes = scan_directory(dir.path(), false).unwrap();
+        assert_eq!(nodes.len(), 3); // root + text + binary
+
+        let text_node = nodes.iter().find(|n| n.name == "hello.txt").unwrap();
+        assert!(matches!(text_node.node_type, NodeType::TextFile));
+
+        let bin_node = nodes.iter().find(|n| n.name == "image.bin").unwrap();
+        assert!(matches!(bin_node.node_type, NodeType::BinaryFile));
+    }
+
+    #[test]
+    fn test_scan_skip_hidden() {
+        let dir = TempDir::new().unwrap();
+        fs::write(dir.path().join("visible.txt"), "visible").unwrap();
+        fs::write(dir.path().join(".hidden.txt"), "hidden").unwrap();
+
+        let nodes = scan_directory(dir.path(), false).unwrap();
+        let names: Vec<_> = nodes.iter().map(|n| n.name.as_str()).collect();
+        assert!(names.contains(&"visible.txt"));
+        assert!(!names.contains(&".hidden.txt"));
+    }
+
+    #[test]
+    fn test_scan_skip_system_dir() {
+        let dir = TempDir::new().unwrap();
+        fs::write(dir.path().join("file.txt"), "text").unwrap();
+        fs::create_dir(dir.path().join("$Recycle.Bin")).unwrap();
+        fs::write(dir.path().join("$Recycle.Bin").join("trash.txt"), "trash").unwrap();
+
+        let nodes = scan_directory(dir.path(), false).unwrap();
+        let names: Vec<_> = nodes.iter().map(|n| n.name.as_str()).collect();
+        assert!(names.contains(&"file.txt"));
+        assert!(!names.contains(&"$Recycle.Bin"));
+        assert!(!names.contains(&"trash.txt"));
+    }
+
+    #[test]
+    fn test_scan_exclude_binary() {
+        let dir = TempDir::new().unwrap();
+        fs::write(dir.path().join("text.txt"), "text").unwrap();
+        fs::write(dir.path().join("binary.bin"), vec![0x00, 0xFF]).unwrap();
+
+        let nodes_with_binary = scan_directory(dir.path(), false).unwrap();
+        assert_eq!(nodes_with_binary.len(), 3); // root + text + binary
+
+        let nodes_without_binary = scan_directory(dir.path(), true).unwrap();
+        assert_eq!(nodes_without_binary.len(), 2); // root + text only
+    }
+
+    #[test]
+    fn test_scan_parent_child_relations() {
+        let dir = TempDir::new().unwrap();
+        fs::create_dir(dir.path().join("subdir")).unwrap();
+        fs::write(dir.path().join("subdir").join("nested.txt"), "nested").unwrap();
+
+        let nodes = scan_directory(dir.path(), false).unwrap();
+        let root = nodes.iter().find(|n| n.id == 0).unwrap();
+        assert_eq!(root.node_type, NodeType::Directory);
+
+        let subdir = nodes.iter().find(|n| n.name == "subdir").unwrap();
+        assert_eq!(subdir.parent_id, Some(root.id));
+        assert!(root.children.contains(&subdir.id));
+
+        let nested = nodes.iter().find(|n| n.name == "nested.txt").unwrap();
+        assert_eq!(nested.parent_id, Some(subdir.id));
+        assert!(subdir.children.contains(&nested.id));
+    }
+
+    #[test]
+    fn test_scan_max_nodes_limit() {
+        let dir = TempDir::new().unwrap();
+        for i in 0..(MAX_SCAN_NODES + 5) {
+            fs::write(dir.path().join(format!("file_{}.txt", i)), format!("content {}", i)).unwrap();
+        }
+
+        let result = scan_directory(dir.path(), false);
+        assert!(result.is_err());
+        assert!(result.unwrap_err().contains("过多文件"));
+    }
+
+    #[test]
+    fn test_is_text_file() {
+        let dir = TempDir::new().unwrap();
+        let text_path = dir.path().join("text.txt");
+        fs::write(&text_path, "This is plain text.").unwrap();
+        assert!(is_text_file(&text_path));
+
+        let bin_path = dir.path().join("binary.bin");
+        fs::write(&bin_path, vec![0x00, 0x01, 0x02, 0x03, 0xFF]).unwrap();
+        assert!(!is_text_file(&bin_path));
+    }
+}

@@ -177,3 +177,107 @@ pub fn convert_file(
         result: Ok(()),
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::types::Encoding;
+    use std::fs;
+    use tempfile::TempDir;
+
+    #[test]
+    fn test_convert_gbk_to_utf8() {
+        let dir = TempDir::new().unwrap();
+        let path = dir.path().join("source.txt");
+        let text = "这是一段中文测试文本";
+        let (gbk_bytes, _, _) = encoding_rs::GBK.encode(text);
+        fs::write(&path, &gbk_bytes).unwrap();
+
+        let meta = fs::metadata(&path).unwrap();
+        let expected_size = meta.len();
+        let expected_modified = meta.modified().unwrap().duration_since(std::time::UNIX_EPOCH).unwrap().as_secs();
+
+        let result = convert_file(
+            1,
+            &path,
+            Some("GBK".to_string()),
+            Encoding::Utf8,
+            Some(expected_size),
+            Some(expected_modified),
+        );
+
+        assert!(result.result.is_ok(), "转换失败: {:?}", result.result.err());
+
+        let content = fs::read_to_string(&path).unwrap();
+        assert_eq!(content, text);
+    }
+
+    #[test]
+    fn test_convert_utf8_to_utf8bom() {
+        let dir = TempDir::new().unwrap();
+        let path = dir.path().join("source.txt");
+        fs::write(&path, "Hello, World!").unwrap();
+
+        let result = convert_file(
+            1,
+            &path,
+            Some("UTF-8".to_string()),
+            Encoding::Utf8Bom,
+            None,
+            None,
+        );
+
+        assert!(result.result.is_ok());
+
+        let bytes = fs::read(&path).unwrap();
+        assert!(bytes.starts_with(&[0xEF, 0xBB, 0xBF]));
+        assert!(std::str::from_utf8(&bytes[3..]).unwrap().contains("Hello, World!"));
+    }
+
+    #[test]
+    fn test_convert_size_mismatch() {
+        let dir = TempDir::new().unwrap();
+        let path = dir.path().join("source.txt");
+        fs::write(&path, "original content").unwrap();
+
+        let result = convert_file(
+            1,
+            &path,
+            Some("UTF-8".to_string()),
+            Encoding::Utf8,
+            Some(9999), // 错误的大小
+            None,
+        );
+
+        assert!(result.result.is_err());
+        assert!(result.result.unwrap_err().contains("大小不一致"));
+    }
+
+    #[test]
+    fn test_convert_preserves_mtime() {
+        let dir = TempDir::new().unwrap();
+        let path = dir.path().join("source.txt");
+        fs::write(&path, "content").unwrap();
+
+        let original_mtime = fs::metadata(&path).unwrap().modified().unwrap();
+
+        let result = convert_file(
+            1,
+            &path,
+            Some("UTF-8".to_string()),
+            Encoding::Gbk,
+            None,
+            None,
+        );
+
+        assert!(result.result.is_ok());
+
+        let new_mtime = fs::metadata(&path).unwrap().modified().unwrap();
+        let diff = if new_mtime > original_mtime {
+            new_mtime.duration_since(original_mtime).unwrap()
+        } else {
+            original_mtime.duration_since(new_mtime).unwrap()
+        };
+        assert!(diff.as_secs() < 2, "修改时间未被正确保留");
+    }
+}

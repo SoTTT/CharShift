@@ -102,3 +102,61 @@ impl FileLocker {
         self.handles.len()
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::fs;
+    use tempfile::TempDir;
+
+    #[test]
+    fn test_lock_and_unlock() {
+        let dir = TempDir::new().unwrap();
+        let path = dir.path().join("lock.txt");
+        fs::write(&path, "locked").unwrap();
+
+        let mut locker = FileLocker::new();
+        assert_eq!(locker.locked_count(), 0);
+
+        let result = locker.lock_file(&path);
+        assert!(result.success);
+
+        #[cfg(windows)]
+        assert_eq!(locker.locked_count(), 1);
+        #[cfg(not(windows))]
+        assert_eq!(locker.locked_count(), 0); // POSIX 不持有句柄
+
+        locker.unlock_file(&path);
+        assert_eq!(locker.locked_count(), 0);
+    }
+
+    #[test]
+    fn test_lock_idempotent() {
+        let dir = TempDir::new().unwrap();
+        let path = dir.path().join("lock.txt");
+        fs::write(&path, "locked").unwrap();
+
+        let mut locker = FileLocker::new();
+        let r1 = locker.lock_file(&path);
+        assert!(r1.success);
+
+        let r2 = locker.lock_file(&path);
+        assert!(r2.success);
+    }
+
+    #[test]
+    fn test_unlock_all() {
+        let dir = TempDir::new().unwrap();
+        let path1 = dir.path().join("a.txt");
+        let path2 = dir.path().join("b.txt");
+        fs::write(&path1, "a").unwrap();
+        fs::write(&path2, "b").unwrap();
+
+        let mut locker = FileLocker::new();
+        locker.lock_file(&path1);
+        locker.lock_file(&path2);
+
+        locker.unlock_all();
+        assert_eq!(locker.locked_count(), 0);
+    }
+}

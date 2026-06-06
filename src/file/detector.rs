@@ -150,3 +150,99 @@ pub fn detect_encoding(node_id: NodeId, path: &std::path::Path) -> DetectionResu
         encoding: None,
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::fs;
+    use tempfile::TempDir;
+
+    #[test]
+    fn test_detect_utf8_bom() {
+        let dir = TempDir::new().unwrap();
+        let path = dir.path().join("utf8bom.txt");
+        let mut bytes = vec![0xEF, 0xBB, 0xBF];
+        bytes.extend_from_slice("UTF-8 with BOM".as_bytes());
+        fs::write(&path, &bytes).unwrap();
+        let result = detect_encoding(1, &path);
+        assert_eq!(result.encoding, Some("UTF-8-BOM".to_string()));
+    }
+
+    #[test]
+    fn test_detect_utf16le_bom() {
+        let dir = TempDir::new().unwrap();
+        let path = dir.path().join("utf16le.txt");
+        let mut bytes = vec![0xFF, 0xFE];
+        let (encoded, _, _) = encoding_rs::UTF_16LE.encode("UTF-16LE text");
+        bytes.extend_from_slice(&encoded);
+        fs::write(&path, &bytes).unwrap();
+        let result = detect_encoding(1, &path);
+        assert_eq!(result.encoding, Some("UTF-16LE".to_string()));
+    }
+
+    #[test]
+    fn test_detect_utf16be_bom() {
+        let dir = TempDir::new().unwrap();
+        let path = dir.path().join("utf16be.txt");
+        let mut bytes = vec![0xFE, 0xFF];
+        let (encoded, _, _) = encoding_rs::UTF_16BE.encode("UTF-16BE text");
+        bytes.extend_from_slice(&encoded);
+        fs::write(&path, &bytes).unwrap();
+        let result = detect_encoding(1, &path);
+        assert_eq!(result.encoding, Some("UTF-16BE".to_string()));
+    }
+
+    #[test]
+    fn test_detect_gbk() {
+        let dir = TempDir::new().unwrap();
+        let path = dir.path().join("gbk.txt");
+        let text = "这是一段用于检测的中文文本，包含足够的字符以便 chardet 进行分析。";
+        let (bytes, _, _) = encoding_rs::GBK.encode(text);
+        fs::write(&path, &bytes).unwrap();
+        let result = detect_encoding(1, &path);
+        assert_eq!(result.encoding, Some("GBK".to_string()));
+    }
+
+    #[test]
+    fn test_detect_utf8_heuristic() {
+        let dir = TempDir::new().unwrap();
+        let path = dir.path().join("utf8.txt");
+        fs::write(&path, "Pure UTF-8 text without BOM.").unwrap();
+        let result = detect_encoding(1, &path);
+        assert_eq!(result.encoding, Some("UTF-8".to_string()));
+    }
+
+    #[test]
+    fn test_detect_empty_file() {
+        let dir = TempDir::new().unwrap();
+        let path = dir.path().join("empty.txt");
+        fs::write(&path, b"").unwrap();
+        let result = detect_encoding(1, &path);
+        assert_eq!(result.encoding, Some("UTF-8".to_string()));
+    }
+
+    #[test]
+    fn test_detect_binary() {
+        let dir = TempDir::new().unwrap();
+        let path = dir.path().join("binary.bin");
+        // 生成 8KB 伪随机均匀分布数据，chardet 置信度通常低于阈值
+        let data: Vec<u8> = (0..8192).map(|i| ((i * 7 + 13) % 256) as u8).collect();
+        fs::write(&path, &data).unwrap();
+        let result = detect_encoding(1, &path);
+        assert_eq!(result.encoding, None);
+    }
+
+    #[test]
+    fn test_chardet_to_encoding_mappings() {
+        assert_eq!(chardet_to_encoding("utf-8"), Some("UTF-8".to_string()));
+        assert_eq!(chardet_to_encoding("gb2312"), Some("GBK".to_string()));
+        assert_eq!(chardet_to_encoding("gbk"), Some("GBK".to_string()));
+        assert_eq!(chardet_to_encoding("gb18030"), Some("GB18030".to_string()));
+        assert_eq!(chardet_to_encoding("big5"), Some("BIG5".to_string()));
+        assert_eq!(chardet_to_encoding("iso-8859-1"), Some("ISO-8859-1".to_string()));
+        assert_eq!(chardet_to_encoding("windows-1252"), Some("WINDOWS-1252".to_string()));
+        assert_eq!(chardet_to_encoding("utf-16le"), Some("UTF-16LE".to_string()));
+        assert_eq!(chardet_to_encoding("utf-16be"), Some("UTF-16BE".to_string()));
+        assert_eq!(chardet_to_encoding("unknown-charset"), None);
+    }
+}
