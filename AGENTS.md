@@ -150,7 +150,7 @@ Rust 后端实际支持的编码：
 - GBK
 - GB18030
 - BIG5
-- ISO-8859-1
+- ISO-8859-1（底层 `encoding_rs` 无独立实现，实际以 `WINDOWS_1252` 处理，两者完全兼容）
 - WINDOWS-1252
 
 > 前端下拉框选项与后端 `Encoding` 枚举已保持同步。

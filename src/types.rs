@@ -71,7 +71,7 @@ impl Encoding {
             Encoding::Gbk => encoding_rs::GBK,
             Encoding::Gb18030 => encoding_rs::GB18030,
             Encoding::Big5 => encoding_rs::BIG5,
-            Encoding::Iso8859_1 => encoding_rs::ISO_8859_1,
+            Encoding::Iso8859_1 => encoding_rs::WINDOWS_1252, // encoding_rs 无独立的 ISO-8859-1，以 Windows-1252 处理（为其超集）
             Encoding::Windows1252 => encoding_rs::WINDOWS_1252,
         }
     }
