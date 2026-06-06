@@ -468,6 +468,33 @@ html, body {
   color: var(--color-error-foreground);
 }
 
+.dir-expand-all-btn {
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--border);
+  cursor: pointer;
+  flex-shrink: 0;
+  opacity: 0;
+  transition: opacity 0.15s ease, background 0.15s ease, color 0.15s ease;
+  user-select: none;
+  background: var(--background);
+}
+
+.tree-item:hover .dir-expand-all-btn {
+  opacity: 1;
+}
+
+.dir-expand-all-btn:hover {
+  background: var(--muted);
+  color: var(--muted-foreground);
+}
+
 .checkbox {
   width: 16px;
   height: 16px;

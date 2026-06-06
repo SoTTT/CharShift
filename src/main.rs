@@ -66,22 +66,21 @@ fn pick_directory() -> Result<Option<String>, String> {
 }
 
 /// 递归扫描指定目录，返回文件树节点列表
-/// 
+///
 /// 在阻塞线程池中执行，避免阻塞 async runtime
 #[tauri::command]
 async fn scan_directory(path: String, exclude_binary: bool) -> Result<Vec<FileNode>, String> {
     let path = PathBuf::from(path);
     // 目录扫描是 IO 密集型阻塞操作，放到 spawn_blocking 中执行
-    let nodes = tokio::task::spawn_blocking(move || {
-        file::scanner::scan_directory(&path, exclude_binary)
-    })
-    .await
-    .map_err(|e| e.to_string())?;
+    let nodes =
+        tokio::task::spawn_blocking(move || file::scanner::scan_directory(&path, exclude_binary))
+            .await
+            .map_err(|e| e.to_string())?;
     nodes
 }
 
 /// 批量同步检测编码（一次性返回全部结果）
-/// 
+///
 /// 适用于文件数量较少的场景
 #[tauri::command]
 async fn detect_encodings(tasks: Vec<DetectTask>) -> Result<Vec<serde_json::Value>, String> {
@@ -98,7 +97,7 @@ async fn detect_encodings(tasks: Vec<DetectTask>) -> Result<Vec<serde_json::Valu
 }
 
 /// 批量流式检测编码（通过 Channel 实时推送进度）
-/// 
+///
 /// 最大并发 16 个，适合大量文件场景，前端可实时更新进度条
 #[tauri::command]
 async fn detect_encodings_stream(
@@ -150,7 +149,7 @@ async fn detect_encodings_stream(
 }
 
 /// 批量转换文件编码
-/// 
+///
 /// 最大并发 4 个，每个任务独立执行：校验 → 读取 → 解码 → 重新编码 → 原子写入
 #[tauri::command]
 async fn convert_files(

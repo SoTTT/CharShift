@@ -43,18 +43,6 @@
         </svg>
         清空
       </button>
-      <button id="btn-expand-all" class="btn btn-secondary" title="展开全部目录">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="6 9 12 15 18 9"/>
-        </svg>
-        展开
-      </button>
-      <button id="btn-collapse-all" class="btn btn-secondary" title="收起全部目录">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="18 15 12 9 6 15"/>
-        </svg>
-        收起
-      </button>
       <div class="spacer"></div>
       <label class="encoding-label">目标编码：</label>
       <div class="encoding-select-wrapper">
@@ -66,13 +54,12 @@
         </div>
         <div class="encoding-dropdown hidden" id="encoding-dropdown">
           <div class="encoding-option selected" data-value="UTF-8">UTF-8</div>
+          <div class="encoding-option" data-value="UTF-8-BOM">UTF-8-BOM</div>
+          <div class="encoding-option" data-value="UTF-16LE">UTF-16LE</div>
+          <div class="encoding-option" data-value="UTF-16BE">UTF-16BE</div>
           <div class="encoding-option" data-value="GBK">GBK</div>
-          <div class="encoding-option" data-value="GB2312">GB2312</div>
           <div class="encoding-option" data-value="GB18030">GB18030</div>
           <div class="encoding-option" data-value="BIG5">BIG5</div>
-          <div class="encoding-option" data-value="SHIFT_JIS">SHIFT_JIS</div>
-          <div class="encoding-option" data-value="EUC-JP">EUC-JP</div>
-          <div class="encoding-option" data-value="EUC-KR">EUC-KR</div>
           <div class="encoding-option" data-value="ISO-8859-1">ISO-8859-1</div>
           <div class="encoding-option" data-value="WINDOWS-1252">WINDOWS-1252</div>
         </div>

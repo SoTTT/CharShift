@@ -71,7 +71,7 @@ impl Encoding {
             Encoding::Gbk => encoding_rs::GBK,
             Encoding::Gb18030 => encoding_rs::GB18030,
             Encoding::Big5 => encoding_rs::BIG5,
-            Encoding::Iso8859_1 => encoding_rs::ISO_8859_2,
+            Encoding::Iso8859_1 => encoding_rs::ISO_8859_1,
             Encoding::Windows1252 => encoding_rs::WINDOWS_1252,
         }
     }

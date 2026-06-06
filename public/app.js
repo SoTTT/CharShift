@@ -33,8 +33,6 @@ const emptyEl = $('empty-state');
 const btnSettings = $('btn-settings');
 const btnOpen = $('btn-open');
 const btnClear = $('btn-clear');
-const btnExpandAll = $('btn-expand-all');
-const btnCollapseAll = $('btn-collapse-all');
 const btnConvert = $('btn-convert');
 const encodingTrigger = $('encoding-trigger');
 const encodingDropdown = $('encoding-dropdown');
@@ -265,6 +263,12 @@ function renderTree() {
         name.className = 'dir-name';
         name.textContent = node.name;
         el.appendChild(name);
+
+        // 目录项：根据展开状态显示"全部展开"或"全部收起"按钮
+        const expandAllBtn = document.createElement('div');
+        expandAllBtn.className = 'dir-expand-all-btn';
+        expandAllBtn.textContent = node.is_expanded ? '全部收起' : '全部展开';
+        el.appendChild(expandAllBtn);
       } else {
         // 文件节点：缩进 + 复选框 + 文件名 + 编码显示
         indent.style.width = ((depth + 1) * 20 + 10) + 'px';
@@ -348,23 +352,28 @@ function toggleDir(id) {
   renderTree();
 }
 
-/// 展开所有目录节点（递归展开整棵树）
-function expandAll() {
-  for (const node of nodes.values()) {
-    if (node.node_type === 'Directory') {
-      node.is_expanded = true;
-    }
-  }
-  renderTree();
-}
+/// 切换指定目录及其所有后代目录的展开/收起状态
+/// @param id 目录节点 ID
+function toggleDirExpandAll(id) {
+  const node = nodes.get(id);
+  if (!node || node.node_type !== 'Directory') return;
+  const targetState = !node.is_expanded;
 
-/// 收起所有目录节点（递归收起整棵树）
-function collapseAll() {
-  for (const node of nodes.values()) {
-    if (node.node_type === 'Directory') {
-      node.is_expanded = false;
+  /// 递归设置目录及其所有后代的状态
+  /// @param nodeId 当前节点 ID
+  /// @param state 目标展开状态
+  const setAll = (nodeId, state) => {
+    const n = nodes.get(nodeId);
+    if (!n) return;
+    if (n.node_type === 'Directory') {
+      n.is_expanded = state;
+      for (const childId of n.children) {
+        setAll(childId, state);
+      }
     }
-  }
+  };
+
+  setAll(id, targetState);
   renderTree();
 }
 
@@ -516,6 +525,14 @@ treeEl.addEventListener('click', async (e) => {
     return;
   }
 
+  // "全部展开/收起"按钮被点击
+  if (e.target.closest('.dir-expand-all-btn')) {
+    if (node.node_type === 'Directory') {
+      toggleDirExpandAll(id);
+    }
+    return;
+  }
+
   // 点击行本身（非按钮/复选框/箭头区域）
   if (node.node_type === 'Directory') {
     toggleDir(id);
@@ -658,16 +675,6 @@ btnClear.addEventListener('click', async () => {
   renderTree();
   updateCounts();
   setStatus('idle', '就绪');
-});
-
-// 展开全部目录
-btnExpandAll.addEventListener('click', () => {
-  expandAll();
-});
-
-// 收起全部目录
-btnCollapseAll.addEventListener('click', () => {
-  collapseAll();
 });
 
 // "开始转换"按钮：批量转换选中的文本文件

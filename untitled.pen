@@ -1,0 +1,2701 @@
+{
+  "version": "2.11",
+  "children": [
+    {
+      "type": "frame",
+      "id": "K9gQO",
+      "x": 7462,
+      "y": -2871,
+      "name": "Code Convertor - Main Window (Responsive)",
+      "clip": true,
+      "width": 1280,
+      "height": 800,
+      "fill": "$--background",
+      "cornerRadius": "$--radius-m",
+      "stroke": {
+        "align": "inside",
+        "thickness": 1,
+        "fill": "$--border"
+      },
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "Iq2op",
+          "name": "Title Bar",
+          "width": "fill_container",
+          "gap": 12,
+          "padding": [
+            12,
+            20
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "e2FqF",
+              "name": "App Icon",
+              "width": 28,
+              "height": 28,
+              "fill": "$--primary",
+              "cornerRadius": 6,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "d6OoRE",
+                  "x": 0,
+                  "y": 0,
+                  "name": "CC",
+                  "fill": "$--primary-foreground",
+                  "content": "CC",
+                  "textAlign": "center",
+                  "textAlignVertical": "middle",
+                  "fontFamily": "$--font-primary",
+                  "fontSize": 12,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "dMcaC",
+              "name": "App Title",
+              "fill": "$--foreground",
+              "content": "Code Convertor",
+              "fontFamily": "$--font-primary",
+              "fontSize": 16,
+              "fontWeight": "600"
+            },
+            {
+              "type": "frame",
+              "id": "Nwu2Z",
+              "name": "Spacer",
+              "width": "fill_container",
+              "height": 1
+            },
+            {
+              "type": "frame",
+              "id": "dnREA",
+              "name": "Settings Button",
+              "width": 32,
+              "height": 32,
+              "cornerRadius": 6,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "icon_font",
+                  "id": "fSpb3",
+                  "x": 7,
+                  "y": 7,
+                  "name": "Settings Icon",
+                  "width": 18,
+                  "height": 18,
+                  "iconFontName": "settings",
+                  "iconFontFamily": "lucide",
+                  "fill": "$--muted-foreground"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "pbcdj",
+          "name": "Toolbar",
+          "width": "fill_container",
+          "gap": 12,
+          "padding": [
+            16,
+            20
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "OOqF4",
+              "name": "Open Directory Button",
+              "height": 40,
+              "fill": "$--primary",
+              "cornerRadius": "$--radius-pill",
+              "gap": 6,
+              "padding": [
+                10,
+                16
+              ],
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "BVznv",
+                  "x": 16,
+                  "y": 10,
+                  "name": "plus",
+                  "enabled": false,
+                  "width": 20,
+                  "height": 20,
+                  "stroke": {
+                    "align": "inside",
+                    "thickness": 1
+                  },
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "path",
+                      "id": "EHuYP",
+                      "x": 5,
+                      "y": 5,
+                      "name": "Vector",
+                      "geometry": "M7.07104 3.53555l-3.53552 0-3.53552 0m3.53552-3.53555l0 3.53555 0 3.53549",
+                      "width": 10,
+                      "height": 10,
+                      "stroke": {
+                        "align": "center",
+                        "thickness": 1.5,
+                        "join": "round",
+                        "cap": "round",
+                        "fill": "$--primary-foreground"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "FpuDH",
+                  "name": "Button",
+                  "fill": "$--primary-foreground",
+                  "content": "打开目录",
+                  "lineHeight": 1.4286,
+                  "textAlign": "center",
+                  "textAlignVertical": "middle",
+                  "fontFamily": "$--font-primary",
+                  "fontSize": 14,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "z8F9Mn",
+              "name": "Clear Button",
+              "height": 40,
+              "fill": "$--secondary",
+              "cornerRadius": "$--radius-pill",
+              "gap": 6,
+              "padding": [
+                10,
+                16
+              ],
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "RI5V0",
+                  "name": "plus",
+                  "width": 20,
+                  "height": 20,
+                  "stroke": {
+                    "align": "inside",
+                    "thickness": 1
+                  },
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "path",
+                      "id": "k5Qpk",
+                      "x": 5,
+                      "y": 5,
+                      "name": "Vector",
+                      "geometry": "M7.07104 3.53555l-3.53552 0-3.53552 0m3.53552-3.53555l0 3.53555 0 3.53549",
+                      "width": 10,
+                      "height": 10,
+                      "stroke": {
+                        "align": "center",
+                        "thickness": 1.5,
+                        "join": "round",
+                        "cap": "round",
+                        "fill": "$--secondary-foreground"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "fRp5o",
+                  "name": "Button",
+                  "fill": "$--secondary-foreground",
+                  "content": "清空",
+                  "lineHeight": 1.4286,
+                  "textAlign": "center",
+                  "textAlignVertical": "middle",
+                  "fontFamily": "$--font-primary",
+                  "fontSize": 14,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "lQwqt",
+              "name": "Toolbar Spacer",
+              "width": "fill_container",
+              "height": 1
+            },
+            {
+              "type": "text",
+              "id": "DjQ3Y",
+              "name": "Encoding Label",
+              "fill": "$--muted-foreground",
+              "content": "目标编码:",
+              "fontFamily": "$--font-secondary",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "vGjVV",
+              "name": "Encoding Select",
+              "height": 40,
+              "fill": "$--card",
+              "cornerRadius": "$--radius-pill",
+              "stroke": {
+                "align": "inside",
+                "thickness": 1,
+                "fill": "$--border"
+              },
+              "gap": 8,
+              "padding": [
+                10,
+                16
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "u8sxg3",
+                  "name": "Selected Encoding",
+                  "fill": "$--foreground",
+                  "content": "UTF-8",
+                  "fontFamily": "$--font-secondary",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "KIHqA",
+                  "name": "Dropdown Arrow",
+                  "width": 16,
+                  "height": 16,
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "path",
+                      "id": "dGzys",
+                      "x": 0,
+                      "y": 0,
+                      "name": "Chevron Down",
+                      "geometry": "M2 5l6 6 6-6",
+                      "viewBox": [
+                        0,
+                        0,
+                        16,
+                        16
+                      ],
+                      "width": 16,
+                      "height": 16,
+                      "stroke": {
+                        "align": "center",
+                        "thickness": 1.5,
+                        "join": "round",
+                        "cap": "round",
+                        "fill": "$--muted-foreground"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "PPNCb",
+              "name": "Convert Button",
+              "height": 40,
+              "fill": "$--primary",
+              "cornerRadius": "$--radius-pill",
+              "gap": 6,
+              "padding": [
+                10,
+                16
+              ],
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "QYFTE",
+                  "x": 16,
+                  "y": 10,
+                  "name": "plus",
+                  "enabled": false,
+                  "width": 20,
+                  "height": 20,
+                  "stroke": {
+                    "align": "inside",
+                    "thickness": 1
+                  },
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "path",
+                      "id": "E0z3uu",
+                      "x": 5,
+                      "y": 5,
+                      "name": "Vector",
+                      "geometry": "M7.07104 3.53555l-3.53552 0-3.53552 0m3.53552-3.53555l0 3.53555 0 3.53549",
+                      "width": 10,
+                      "height": 10,
+                      "stroke": {
+                        "align": "center",
+                        "thickness": 1.5,
+                        "join": "round",
+                        "cap": "round",
+                        "fill": "$--primary-foreground"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "qpaPx",
+                  "name": "Button",
+                  "fill": "$--primary-foreground",
+                  "content": "开始转换",
+                  "lineHeight": 1.4286,
+                  "textAlign": "center",
+                  "textAlignVertical": "middle",
+                  "fontFamily": "$--font-primary",
+                  "fontSize": 14,
+                  "fontWeight": "500"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "ATA7b",
+          "name": "File Tree Card",
+          "width": "fill_container",
+          "height": "fill_container",
+          "fill": "$--card",
+          "cornerRadius": "$--radius-m",
+          "stroke": {
+            "align": "inside",
+            "thickness": 1,
+            "fill": "$--border"
+          },
+          "layout": "vertical",
+          "children": [
+            {
+              "type": "frame",
+              "id": "J0hhdT",
+              "name": "Empty State",
+              "width": "fill_container",
+              "height": "fill_container",
+              "layout": "vertical",
+              "gap": 12,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "gaflz",
+                  "name": "Empty Icon",
+                  "width": 48,
+                  "height": 48,
+                  "fill": "$--muted",
+                  "cornerRadius": 12,
+                  "layout": "none"
+                },
+                {
+                  "type": "text",
+                  "id": "ToWfs",
+                  "name": "Empty Title",
+                  "fill": "$--foreground",
+                  "content": "暂无文件",
+                  "fontFamily": "$--font-primary",
+                  "fontSize": 16,
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "text",
+                  "id": "pBmer",
+                  "name": "Empty Subtitle",
+                  "fill": "$--muted-foreground",
+                  "content": "点击「打开目录」开始扫描",
+                  "fontFamily": "$--font-secondary",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "W0AYBf",
+                  "name": "Drag Hint",
+                  "fill": "#FF8400",
+                  "content": "或将文本文件直接拖入此处",
+                  "textAlign": "center",
+                  "fontFamily": "Geist",
+                  "fontSize": 14,
+                  "fontWeight": "500"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "WCP4T",
+          "name": "Status Bar",
+          "width": "fill_container",
+          "gap": 8,
+          "padding": [
+            10,
+            20
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "ellipse",
+              "id": "lILTX",
+              "name": "Status Dot",
+              "fill": "$--color-success-foreground",
+              "width": 8,
+              "height": 8
+            },
+            {
+              "type": "text",
+              "id": "g3eSg",
+              "name": "Status Text",
+              "fill": "$--muted-foreground",
+              "content": "就绪",
+              "fontFamily": "$--font-secondary",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "bfMyD",
+              "name": "Status Spacer",
+              "width": "fill_container",
+              "height": 1
+            },
+            {
+              "type": "text",
+              "id": "R3KWJM",
+              "name": "Node Count",
+              "fill": "$--muted-foreground",
+              "content": "0 个节点",
+              "fontFamily": "$--font-secondary",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "V2t2k",
+      "x": 11107,
+      "y": -2871,
+      "name": "Code Convertor - With Files (Responsive)",
+      "clip": true,
+      "width": 1280,
+      "height": 800,
+      "fill": "$--background",
+      "cornerRadius": "$--radius-m",
+      "stroke": {
+        "align": "inside",
+        "thickness": 1,
+        "fill": "$--border"
+      },
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "eUoEE",
+          "name": "Title Bar 2",
+          "width": "fill_container",
+          "gap": 12,
+          "padding": [
+            12,
+            20
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "vBK9a",
+              "name": "App Icon 2",
+              "width": 28,
+              "height": 28,
+              "fill": "$--primary",
+              "cornerRadius": 6,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "r8j77",
+                  "x": 0,
+                  "y": 0,
+                  "name": "CC 2",
+                  "fill": "$--primary-foreground",
+                  "content": "CC",
+                  "textAlign": "center",
+                  "textAlignVertical": "middle",
+                  "fontFamily": "$--font-primary",
+                  "fontSize": 12,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "zZ3xT",
+              "name": "App Title 2",
+              "fill": "$--foreground",
+              "content": "Code Convertor",
+              "fontFamily": "$--font-primary",
+              "fontSize": 16,
+              "fontWeight": "600"
+            },
+            {
+              "type": "frame",
+              "id": "zFgjD",
+              "name": "Spacer 2",
+              "width": "fill_container",
+              "height": 1
+            },
+            {
+              "type": "frame",
+              "id": "GeNDF",
+              "name": "Settings Button 2",
+              "width": 32,
+              "height": 32,
+              "cornerRadius": 6,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "icon_font",
+                  "id": "N2ZnnV",
+                  "x": 7,
+                  "y": 7,
+                  "name": "Settings Icon 2",
+                  "width": 18,
+                  "height": 18,
+                  "iconFontName": "settings",
+                  "iconFontFamily": "lucide",
+                  "fill": "$--muted-foreground"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "h8oAlt",
+          "name": "Toolbar 2",
+          "width": "fill_container",
+          "gap": 12,
+          "padding": [
+            16,
+            20
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "K7kYFy",
+              "name": "Open Dir Btn 2",
+              "height": 40,
+              "fill": "$--primary",
+              "cornerRadius": "$--radius-pill",
+              "gap": 6,
+              "padding": [
+                10,
+                16
+              ],
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "f9lJl",
+                  "x": 16,
+                  "y": 10,
+                  "name": "plus",
+                  "enabled": false,
+                  "width": 20,
+                  "height": 20,
+                  "stroke": {
+                    "align": "inside",
+                    "thickness": 1
+                  },
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "path",
+                      "id": "K6M6Mw",
+                      "x": 5,
+                      "y": 5,
+                      "name": "Vector",
+                      "geometry": "M7.07104 3.53555l-3.53552 0-3.53552 0m3.53552-3.53555l0 3.53555 0 3.53549",
+                      "width": 10,
+                      "height": 10,
+                      "stroke": {
+                        "align": "center",
+                        "thickness": 1.5,
+                        "join": "round",
+                        "cap": "round",
+                        "fill": "$--primary-foreground"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "qlrLu",
+                  "name": "Button",
+                  "fill": "$--primary-foreground",
+                  "content": "打开目录",
+                  "lineHeight": 1.4286,
+                  "textAlign": "center",
+                  "textAlignVertical": "middle",
+                  "fontFamily": "$--font-primary",
+                  "fontSize": 14,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "W0GZ5P",
+              "name": "Clear Btn 2",
+              "height": 40,
+              "fill": "$--secondary",
+              "cornerRadius": "$--radius-pill",
+              "gap": 6,
+              "padding": [
+                10,
+                16
+              ],
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "Iv6uv",
+                  "name": "plus",
+                  "width": 20,
+                  "height": 20,
+                  "stroke": {
+                    "align": "inside",
+                    "thickness": 1
+                  },
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "path",
+                      "id": "W0niB",
+                      "x": 5,
+                      "y": 5,
+                      "name": "Vector",
+                      "geometry": "M7.07104 3.53555l-3.53552 0-3.53552 0m3.53552-3.53555l0 3.53555 0 3.53549",
+                      "width": 10,
+                      "height": 10,
+                      "stroke": {
+                        "align": "center",
+                        "thickness": 1.5,
+                        "join": "round",
+                        "cap": "round",
+                        "fill": "$--secondary-foreground"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "IhXlR",
+                  "name": "Button",
+                  "fill": "$--secondary-foreground",
+                  "content": "清空",
+                  "lineHeight": 1.4286,
+                  "textAlign": "center",
+                  "textAlignVertical": "middle",
+                  "fontFamily": "$--font-primary",
+                  "fontSize": 14,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "G7qsk",
+              "name": "Toolbar Spacer 2",
+              "width": "fill_container",
+              "height": 1
+            },
+            {
+              "type": "text",
+              "id": "n6b4m",
+              "name": "Encoding Label 2",
+              "fill": "$--muted-foreground",
+              "content": "目标编码:",
+              "fontFamily": "$--font-secondary",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "v2pP0I",
+              "name": "Encoding Select 2",
+              "height": 40,
+              "fill": "$--card",
+              "cornerRadius": "$--radius-pill",
+              "stroke": {
+                "align": "inside",
+                "thickness": 1,
+                "fill": "$--border"
+              },
+              "gap": 8,
+              "padding": [
+                10,
+                16
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "Vwq6C",
+                  "name": "Selected Encoding 2",
+                  "fill": "$--foreground",
+                  "content": "UTF-8",
+                  "fontFamily": "$--font-secondary",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "KwiJj",
+                  "name": "Dropdown Arrow 2",
+                  "width": 16,
+                  "height": 16,
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "path",
+                      "id": "YTyFH",
+                      "x": 0,
+                      "y": 0,
+                      "name": "Chevron Down 2",
+                      "geometry": "M2 5l6 6 6-6",
+                      "viewBox": [
+                        0,
+                        0,
+                        16,
+                        16
+                      ],
+                      "width": 16,
+                      "height": 16,
+                      "stroke": {
+                        "align": "center",
+                        "thickness": 1.5,
+                        "join": "round",
+                        "cap": "round",
+                        "fill": "$--muted-foreground"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "paC82",
+              "name": "Convert Btn 2",
+              "height": 40,
+              "fill": "$--primary",
+              "cornerRadius": "$--radius-pill",
+              "gap": 6,
+              "padding": [
+                10,
+                16
+              ],
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "q0ArJO",
+                  "x": 16,
+                  "y": 10,
+                  "name": "plus",
+                  "enabled": false,
+                  "width": 20,
+                  "height": 20,
+                  "stroke": {
+                    "align": "inside",
+                    "thickness": 1
+                  },
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "path",
+                      "id": "CZoRt",
+                      "x": 5,
+                      "y": 5,
+                      "name": "Vector",
+                      "geometry": "M7.07104 3.53555l-3.53552 0-3.53552 0m3.53552-3.53555l0 3.53555 0 3.53549",
+                      "width": 10,
+                      "height": 10,
+                      "stroke": {
+                        "align": "center",
+                        "thickness": 1.5,
+                        "join": "round",
+                        "cap": "round",
+                        "fill": "$--primary-foreground"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "v62UO",
+                  "name": "Button",
+                  "fill": "$--primary-foreground",
+                  "content": "开始转换 (3)",
+                  "lineHeight": 1.4286,
+                  "textAlign": "center",
+                  "textAlignVertical": "middle",
+                  "fontFamily": "$--font-primary",
+                  "fontSize": 14,
+                  "fontWeight": "500"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "O14rv2",
+          "name": "File Tree Card 2",
+          "width": "fill_container",
+          "height": "fill_container",
+          "fill": "$--card",
+          "cornerRadius": "$--radius-m",
+          "stroke": {
+            "align": "inside",
+            "thickness": 1,
+            "fill": "$--border"
+          },
+          "layout": "vertical",
+          "padding": [
+            12,
+            0
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "t51ID",
+              "name": "Tree Header",
+              "width": "fill_container",
+              "gap": 8,
+              "padding": [
+                8,
+                20
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "oREmX",
+                  "name": "Tree Header Label",
+                  "fill": "$--muted-foreground",
+                  "content": "文件列表",
+                  "fontFamily": "$--font-primary",
+                  "fontSize": 12,
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "frame",
+                  "id": "snU3C",
+                  "name": "Tree Header Spacer",
+                  "width": "fill_container",
+                  "height": 1
+                },
+                {
+                  "type": "text",
+                  "id": "BhqQ9",
+                  "name": "Tree Header Count",
+                  "fill": "$--muted-foreground",
+                  "content": "已选择 3/5",
+                  "fontFamily": "$--font-secondary",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "j1M8z",
+              "name": "Directory Item",
+              "width": "fill_container",
+              "gap": 8,
+              "padding": [
+                8,
+                20
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "vJLyd",
+                  "name": "Dir Checkbox",
+                  "width": 16,
+                  "height": 16,
+                  "fill": "#FF8400",
+                  "cornerRadius": 4,
+                  "layout": "none"
+                },
+                {
+                  "type": "frame",
+                  "id": "c1KlO",
+                  "name": "Dir Chevron",
+                  "width": 16,
+                  "height": 16,
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "path",
+                      "id": "QsUSs",
+                      "x": 0,
+                      "y": 0,
+                      "name": "Expanded Chevron",
+                      "geometry": "M6 4l4 4-4 4",
+                      "viewBox": [
+                        0,
+                        0,
+                        16,
+                        16
+                      ],
+                      "width": 16,
+                      "height": 16,
+                      "stroke": {
+                        "align": "center",
+                        "thickness": 1.5,
+                        "join": "round",
+                        "cap": "round",
+                        "fill": "#FF8400"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "XQ33y",
+                  "name": "Dir Name",
+                  "fill": "#FF8400",
+                  "content": "src",
+                  "fontFamily": "Geist",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "SeXMS",
+                  "name": "Dir Spacer",
+                  "width": "fill_container",
+                  "height": 1,
+                  "layout": "none"
+                },
+                {
+                  "type": "frame",
+                  "id": "Ah2Nt",
+                  "name": "Collapse All Text Btn",
+                  "width": 52,
+                  "height": 20,
+                  "fill": "#F2F3F0",
+                  "cornerRadius": 4,
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "AYznl",
+                      "x": 2,
+                      "y": 2,
+                      "name": "Collapse All Label",
+                      "fill": "#CBCCC9",
+                      "content": "全部收起",
+                      "textAlign": "center",
+                      "textAlignVertical": "middle",
+                      "fontFamily": "Geist",
+                      "fontSize": 14,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "dKHGQ",
+                  "name": "Dir Remove Btn",
+                  "width": 20,
+                  "height": 20,
+                  "fill": "#F2F3F0",
+                  "cornerRadius": 4,
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "Mc8Ir",
+                      "x": 5,
+                      "y": 2,
+                      "name": "Remove X",
+                      "fill": "#CBCCC9",
+                      "content": "移除",
+                      "textAlign": "center",
+                      "textAlignVertical": "middle",
+                      "fontFamily": "Geist",
+                      "fontSize": 14,
+                      "fontWeight": "500"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "NpFCq",
+              "name": "Text File 1",
+              "width": "fill_container",
+              "fill": "#FFF7ED",
+              "gap": 10,
+              "padding": [
+                8,
+                20
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "EmQnR",
+                  "name": "Checkbox 1",
+                  "width": 16,
+                  "height": 16,
+                  "fill": "$--primary",
+                  "cornerRadius": 4,
+                  "layout": "none"
+                },
+                {
+                  "type": "frame",
+                  "id": "qtNjA",
+                  "name": "Check Icon 1",
+                  "width": 16,
+                  "height": 16,
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "path",
+                      "id": "V6Aopg",
+                      "x": 0,
+                      "y": 0,
+                      "name": "Check Mark",
+                      "geometry": "M3 8l3 3 7-7",
+                      "viewBox": [
+                        0,
+                        0,
+                        16,
+                        16
+                      ],
+                      "width": 16,
+                      "height": 16,
+                      "stroke": {
+                        "align": "center",
+                        "thickness": 2,
+                        "join": "round",
+                        "cap": "round",
+                        "fill": "$--primary-foreground"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "hUCnU",
+                  "name": "File Name 1",
+                  "width": "fill_container",
+                  "gap": 8,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "I5cS5",
+                      "name": "File 1 Name",
+                      "fill": "$--foreground",
+                      "content": "main.rs",
+                      "fontFamily": "$--font-secondary",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "q0j1R",
+                      "name": "File 1 Encoding",
+                      "fill": "$--muted-foreground",
+                      "content": "[UTF-8]",
+                      "fontFamily": "$--font-secondary",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "TPe3Q",
+                  "name": "File Remove Btn 1",
+                  "width": 20,
+                  "height": 20,
+                  "fill": "#F2F3F0",
+                  "cornerRadius": 4,
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "UWNwb",
+                      "x": 5,
+                      "y": 2,
+                      "name": "Remove X",
+                      "fill": "#CBCCC9",
+                      "content": "移除",
+                      "textAlign": "center",
+                      "textAlignVertical": "middle",
+                      "fontFamily": "Geist",
+                      "fontSize": 14,
+                      "fontWeight": "500"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "FB0Ds",
+              "name": "Text File 2",
+              "width": "fill_container",
+              "gap": 10,
+              "padding": [
+                8,
+                20
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "hbV3X",
+                  "name": "Checkbox 2",
+                  "width": 16,
+                  "height": 16,
+                  "fill": "$--primary",
+                  "cornerRadius": 4,
+                  "layout": "none"
+                },
+                {
+                  "type": "frame",
+                  "id": "A9HVe",
+                  "name": "Check Icon 2",
+                  "width": 16,
+                  "height": 16,
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "path",
+                      "id": "F2Wsa",
+                      "x": 0,
+                      "y": 0,
+                      "name": "Check Mark 2",
+                      "geometry": "M3 8l3 3 7-7",
+                      "viewBox": [
+                        0,
+                        0,
+                        16,
+                        16
+                      ],
+                      "width": 16,
+                      "height": 16,
+                      "stroke": {
+                        "align": "center",
+                        "thickness": 2,
+                        "join": "round",
+                        "cap": "round",
+                        "fill": "$--primary-foreground"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "K2DTYr",
+                  "name": "File Name 2",
+                  "width": "fill_container",
+                  "gap": 8,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "WalMF",
+                      "name": "File 2 Name",
+                      "fill": "$--foreground",
+                      "content": "app.rs",
+                      "fontFamily": "$--font-secondary",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "B7vrwN",
+                      "name": "File 2 Encoding",
+                      "fill": "$--muted-foreground",
+                      "content": "[GBK]",
+                      "fontFamily": "$--font-secondary",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "asVL9",
+                  "name": "File Remove Btn 2",
+                  "width": 20,
+                  "height": 20,
+                  "fill": "#F2F3F0",
+                  "cornerRadius": 4,
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "TKr5s",
+                      "x": 5,
+                      "y": 2,
+                      "name": "Remove X",
+                      "fill": "#CBCCC9",
+                      "content": "移除",
+                      "textAlign": "center",
+                      "textAlignVertical": "middle",
+                      "fontFamily": "Geist",
+                      "fontSize": 14,
+                      "fontWeight": "500"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "s03aZW",
+              "name": "Binary File",
+              "width": "fill_container",
+              "gap": 10,
+              "padding": [
+                8,
+                20
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "IciAr",
+                  "name": "Checkbox Binary",
+                  "width": 16,
+                  "height": 16,
+                  "fill": "$--border",
+                  "cornerRadius": 4,
+                  "layout": "none"
+                },
+                {
+                  "type": "frame",
+                  "id": "AFrn2",
+                  "name": "Binary Name",
+                  "width": "fill_container",
+                  "gap": 8,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "dg4Xh",
+                      "name": "Binary File Name",
+                      "fill": "$--muted-foreground",
+                      "content": "logo.png",
+                      "fontFamily": "$--font-secondary",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "dzTbT",
+                      "name": "Binary Label",
+                      "fill": "$--muted-foreground",
+                      "content": "(binary)",
+                      "fontFamily": "$--font-secondary",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "gdUeV",
+                  "name": "File Remove Btn 3",
+                  "width": 20,
+                  "height": 20,
+                  "fill": "#F2F3F0",
+                  "cornerRadius": 4,
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "znqmG",
+                      "x": 5,
+                      "y": 2,
+                      "name": "Remove X",
+                      "fill": "#CBCCC9",
+                      "content": "移除",
+                      "textAlign": "center",
+                      "textAlignVertical": "middle",
+                      "fontFamily": "Geist",
+                      "fontSize": 14,
+                      "fontWeight": "500"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "heYd6",
+              "name": "Error File",
+              "width": "fill_container",
+              "gap": 10,
+              "padding": [
+                8,
+                20
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "mPJUq",
+                  "name": "Checkbox Error",
+                  "width": 16,
+                  "height": 16,
+                  "fill": "$--border",
+                  "cornerRadius": 4,
+                  "layout": "none"
+                },
+                {
+                  "type": "frame",
+                  "id": "LNJrR",
+                  "name": "Error Name",
+                  "width": "fill_container",
+                  "gap": 8,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "XJvo0",
+                      "name": "Error File Name",
+                      "fill": "$--color-error-foreground",
+                      "content": "config.toml",
+                      "fontFamily": "$--font-secondary",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "tTHBN",
+                      "name": "Error Label",
+                      "fill": "$--color-error-foreground",
+                      "content": "[UTF-8] · 转换失败",
+                      "fontFamily": "$--font-secondary",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "pHy4T",
+                  "name": "File Remove Btn 4",
+                  "width": 20,
+                  "height": 20,
+                  "fill": "#F2F3F0",
+                  "cornerRadius": 4,
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "UXHye",
+                      "x": 5,
+                      "y": 2,
+                      "name": "Remove X",
+                      "fill": "#CBCCC9",
+                      "content": "移除",
+                      "textAlign": "center",
+                      "textAlignVertical": "middle",
+                      "fontFamily": "Geist",
+                      "fontSize": 14,
+                      "fontWeight": "500"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "n0akj",
+              "name": "Directory Item Collapsed",
+              "width": "fill_container",
+              "gap": 8,
+              "padding": [
+                8,
+                20
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "D3498",
+                  "name": "Dir Checkbox",
+                  "width": 16,
+                  "height": 16,
+                  "fill": "#FF8400",
+                  "cornerRadius": 4,
+                  "layout": "none"
+                },
+                {
+                  "type": "frame",
+                  "id": "x4vCBf",
+                  "name": "Dir Chevron",
+                  "width": 16,
+                  "height": 16,
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "icon_font",
+                      "id": "dl4FI",
+                      "x": 0,
+                      "y": 0,
+                      "width": 16,
+                      "height": 16,
+                      "iconFontName": "chevron-right",
+                      "iconFontFamily": "lucide",
+                      "fill": "#FF8400"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "CPUTm",
+                  "name": "Dir Name",
+                  "fill": "#FF8400",
+                  "content": "assets",
+                  "fontFamily": "Geist",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "q94mrI",
+                  "name": "Dir Spacer",
+                  "width": "fill_container",
+                  "height": 1,
+                  "layout": "none"
+                },
+                {
+                  "type": "frame",
+                  "id": "KVdRT",
+                  "name": "Collapse All Text Btn",
+                  "width": 52,
+                  "height": 20,
+                  "fill": "#F2F3F0",
+                  "cornerRadius": 4,
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "XZhlV",
+                      "x": 2,
+                      "y": 2,
+                      "name": "Collapse All Label",
+                      "fill": "#CBCCC9",
+                      "content": "全部展开",
+                      "textAlign": "center",
+                      "textAlignVertical": "middle",
+                      "fontFamily": "Geist",
+                      "fontSize": 14,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "cxRqv",
+                  "name": "Dir Remove Btn",
+                  "width": 20,
+                  "height": 20,
+                  "fill": "#F2F3F0",
+                  "cornerRadius": 4,
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "bjI1g",
+                      "x": 5,
+                      "y": 2,
+                      "name": "Remove X",
+                      "fill": "#CBCCC9",
+                      "content": "移除",
+                      "textAlign": "center",
+                      "textAlignVertical": "middle",
+                      "fontFamily": "Geist",
+                      "fontSize": 14,
+                      "fontWeight": "500"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "ycnZl",
+          "name": "Status Bar 2",
+          "width": "fill_container",
+          "gap": 8,
+          "padding": [
+            10,
+            20
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "ellipse",
+              "id": "JQcBV",
+              "name": "Status Dot 2",
+              "fill": "$--primary",
+              "width": 8,
+              "height": 8
+            },
+            {
+              "type": "text",
+              "id": "vy47y",
+              "name": "Status Text 2",
+              "fill": "$--muted-foreground",
+              "content": "就绪 · 已选择 3 个文件",
+              "fontFamily": "$--font-secondary",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "Qsruq",
+              "name": "Status Spacer 2",
+              "width": "fill_container",
+              "height": 1
+            },
+            {
+              "type": "text",
+              "id": "JsDO7",
+              "name": "Node Count 2",
+              "fill": "$--muted-foreground",
+              "content": "5 个节点",
+              "fontFamily": "$--font-secondary",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "q3AuQm",
+      "x": 9542,
+      "y": -2871,
+      "name": "Dialog - Conversion Complete",
+      "clip": true,
+      "width": 400,
+      "height": 220,
+      "fill": "$--card",
+      "cornerRadius": "$--radius-m",
+      "stroke": {
+        "align": "inside",
+        "thickness": 1,
+        "fill": "$--border"
+      },
+      "effect": {
+        "type": "shadow",
+        "shadowType": "outer",
+        "color": "#00000026",
+        "offset": {
+          "x": 0,
+          "y": 8
+        },
+        "blur": 24
+      },
+      "layout": "vertical",
+      "gap": 16,
+      "padding": 28,
+      "children": [
+        {
+          "type": "text",
+          "id": "Sqopc",
+          "name": "Dialog Title",
+          "fill": "$--foreground",
+          "content": "转换完成",
+          "fontFamily": "$--font-primary",
+          "fontSize": 18,
+          "fontWeight": "600"
+        },
+        {
+          "type": "frame",
+          "id": "OsguS",
+          "name": "Success Row",
+          "width": "fill_container",
+          "gap": 8,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "cgzpK",
+              "name": "Success Label",
+              "fill": "$--muted-foreground",
+              "content": "成功:",
+              "fontFamily": "$--font-secondary",
+              "fontSize": 14,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "k1o8A",
+              "name": "Success Count",
+              "fill": "$--color-success-foreground",
+              "content": "15 个文件",
+              "fontFamily": "$--font-secondary",
+              "fontSize": 14,
+              "fontWeight": "500"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "vitrO",
+          "name": "Fail Row",
+          "width": "fill_container",
+          "gap": 8,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "bArNA",
+              "name": "Fail Label",
+              "fill": "$--muted-foreground",
+              "content": "失败:",
+              "fontFamily": "$--font-secondary",
+              "fontSize": 14,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "s2g9V",
+              "name": "Fail Count",
+              "fill": "$--color-error-foreground",
+              "content": "2 个文件",
+              "fontFamily": "$--font-secondary",
+              "fontSize": 14,
+              "fontWeight": "500"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "M3o6EN",
+          "name": "Dialog Spacer",
+          "width": "fill_container",
+          "height": "fill_container"
+        },
+        {
+          "type": "frame",
+          "id": "K0yZ1",
+          "name": "Dialog Actions",
+          "width": "fill_container",
+          "gap": 12,
+          "justifyContent": "end",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "x8Rxy",
+              "name": "OK Button",
+              "height": 40,
+              "fill": "$--primary",
+              "cornerRadius": "$--radius-pill",
+              "gap": 6,
+              "padding": [
+                10,
+                16
+              ],
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "seR0a",
+                  "x": 16,
+                  "y": 10,
+                  "name": "plus",
+                  "enabled": false,
+                  "width": 20,
+                  "height": 20,
+                  "stroke": {
+                    "align": "inside",
+                    "thickness": 1
+                  },
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "path",
+                      "id": "zjsYQ",
+                      "x": 5,
+                      "y": 5,
+                      "name": "Vector",
+                      "geometry": "M7.07104 3.53555l-3.53552 0-3.53552 0m3.53552-3.53555l0 3.53555 0 3.53549",
+                      "width": 10,
+                      "height": 10,
+                      "stroke": {
+                        "align": "center",
+                        "thickness": 1.5,
+                        "join": "round",
+                        "cap": "round",
+                        "fill": "$--primary-foreground"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "fyEcp",
+                  "name": "Button",
+                  "fill": "$--primary-foreground",
+                  "content": "确定",
+                  "lineHeight": 1.4286,
+                  "textAlign": "center",
+                  "textAlignVertical": "middle",
+                  "fontFamily": "$--font-primary",
+                  "fontSize": 14,
+                  "fontWeight": "500"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "ahhUL",
+      "x": 10022,
+      "y": -2871,
+      "name": "Dialog - Error",
+      "clip": true,
+      "width": 400,
+      "height": 200,
+      "fill": "$--card",
+      "cornerRadius": "$--radius-m",
+      "stroke": {
+        "align": "inside",
+        "thickness": 1,
+        "fill": "$--border"
+      },
+      "effect": {
+        "type": "shadow",
+        "shadowType": "outer",
+        "color": "#00000026",
+        "offset": {
+          "x": 0,
+          "y": 8
+        },
+        "blur": 24
+      },
+      "layout": "vertical",
+      "gap": 12,
+      "padding": 28,
+      "children": [
+        {
+          "type": "text",
+          "id": "Byd8w",
+          "name": "Error Dialog Title",
+          "fill": "$--color-error-foreground",
+          "content": "出错了",
+          "fontFamily": "$--font-primary",
+          "fontSize": 18,
+          "fontWeight": "600"
+        },
+        {
+          "type": "text",
+          "id": "S82SVB",
+          "name": "Error Message",
+          "fill": "$--foreground",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "文件被其他程序占用，请关闭占用程序后重试。",
+          "fontFamily": "$--font-secondary",
+          "fontSize": 14,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "frame",
+          "id": "fyDsZ",
+          "name": "Error Dialog Spacer",
+          "width": "fill_container",
+          "height": "fill_container"
+        },
+        {
+          "type": "frame",
+          "id": "Gid3p",
+          "name": "Error Dialog Actions",
+          "width": "fill_container",
+          "gap": 12,
+          "justifyContent": "end",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "y1AUa",
+              "name": "Error OK Button",
+              "height": 40,
+              "fill": "$--primary",
+              "cornerRadius": "$--radius-pill",
+              "gap": 6,
+              "padding": [
+                10,
+                16
+              ],
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "tAryX",
+                  "x": 16,
+                  "y": 10,
+                  "name": "plus",
+                  "enabled": false,
+                  "width": 20,
+                  "height": 20,
+                  "stroke": {
+                    "align": "inside",
+                    "thickness": 1
+                  },
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "path",
+                      "id": "L0Subn",
+                      "x": 5,
+                      "y": 5,
+                      "name": "Vector",
+                      "geometry": "M7.07104 3.53555l-3.53552 0-3.53552 0m3.53552-3.53555l0 3.53555 0 3.53549",
+                      "width": 10,
+                      "height": 10,
+                      "stroke": {
+                        "align": "center",
+                        "thickness": 1.5,
+                        "join": "round",
+                        "cap": "round",
+                        "fill": "$--primary-foreground"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "z17yu",
+                  "name": "Button",
+                  "fill": "$--primary-foreground",
+                  "content": "确定",
+                  "lineHeight": 1.4286,
+                  "textAlign": "center",
+                  "textAlignVertical": "middle",
+                  "fontFamily": "$--font-primary",
+                  "fontSize": 14,
+                  "fontWeight": "500"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "o1tH1",
+      "x": 10462,
+      "y": -2871,
+      "name": "Encoding Dropdown Menu",
+      "clip": true,
+      "width": 200,
+      "fill": "$--card",
+      "cornerRadius": "$--radius-m",
+      "stroke": {
+        "align": "inside",
+        "thickness": 1,
+        "fill": "$--border"
+      },
+      "effect": {
+        "type": "shadow",
+        "shadowType": "outer",
+        "color": "#00000026",
+        "offset": {
+          "x": 0,
+          "y": 8
+        },
+        "blur": 24
+      },
+      "layout": "vertical",
+      "padding": 8,
+      "children": [
+        {
+          "type": "frame",
+          "id": "v6ZHc",
+          "name": "Menu Item UTF-8",
+          "width": "fill_container",
+          "height": 36,
+          "padding": [
+            8,
+            12
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "QDE17",
+              "name": "UTF-8",
+              "fill": "$--foreground",
+              "content": "UTF-8",
+              "fontFamily": "$--font-secondary",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "wdezN",
+          "name": "Menu Item GBK",
+          "width": "fill_container",
+          "height": 36,
+          "fill": "#FFF7ED",
+          "padding": [
+            8,
+            12
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "wHj4d",
+              "name": "GBK",
+              "fill": "$--foreground",
+              "content": "GBK",
+              "fontFamily": "$--font-secondary",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "Wl3v2",
+          "name": "Menu Item GB2312",
+          "width": "fill_container",
+          "height": 36,
+          "padding": [
+            8,
+            12
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "SyHf7",
+              "name": "GB2312",
+              "fill": "$--foreground",
+              "content": "GB2312",
+              "fontFamily": "$--font-secondary",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "x4zx2",
+          "name": "Menu Item BIG5",
+          "width": "fill_container",
+          "height": 36,
+          "padding": [
+            8,
+            12
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "YJow0",
+              "name": "BIG5",
+              "fill": "$--foreground",
+              "content": "BIG5",
+              "fontFamily": "$--font-secondary",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "path",
+      "id": "ENyHt",
+      "x": 8548,
+      "y": 208,
+      "name": "Top Head",
+      "geometry": "M0 0l50 28-50 28z",
+      "viewBox": [
+        0,
+        0,
+        50,
+        56
+      ],
+      "fill": "#FFFFFF",
+      "width": 108,
+      "height": 108,
+      "stroke": {
+        "align": "center",
+        "thickness": 0.1,
+        "fill": "#FFFFFF"
+      }
+    },
+    {
+      "type": "frame",
+      "id": "dI34H",
+      "x": 8145,
+      "y": -3871,
+      "name": "Icon 512",
+      "width": 512,
+      "height": "fit_content(512)",
+      "fill": "#ffffff",
+      "cornerRadius": 135,
+      "layout": "none",
+      "children": [
+        {
+          "type": "rectangle",
+          "cornerRadius": 135,
+          "id": "UkOgz",
+          "x": 0,
+          "y": 0,
+          "name": "Icon 512",
+          "fill": "#ff8400ff",
+          "width": 512,
+          "height": 512,
+          "stroke": {
+            "align": "inside",
+            "thickness": 1
+          }
+        },
+        {
+          "type": "rectangle",
+          "cornerRadius": 24,
+          "id": "J6F9AP",
+          "x": 276,
+          "y": 148,
+          "name": "Bottom Body",
+          "rotation": -90,
+          "fill": "#FFFFFF",
+          "width": 200,
+          "height": 41
+        },
+        {
+          "type": "path",
+          "id": "WEATZ",
+          "x": 203,
+          "y": 395,
+          "name": "Bottom Head",
+          "rotation": 90,
+          "geometry": "M50 0l-50 28 50 28z",
+          "viewBox": [
+            0,
+            0,
+            50,
+            56
+          ],
+          "fill": "#FFFFFF",
+          "width": 95,
+          "height": 106,
+          "stroke": {
+            "align": "center",
+            "thickness": 0.1,
+            "fill": "#FFFFFF"
+          }
+        },
+        {
+          "type": "path",
+          "id": "jup7i",
+          "x": 309,
+          "y": 116,
+          "name": "Bottom Head",
+          "rotation": -90,
+          "geometry": "M50 0l-50 28 50 28z",
+          "viewBox": [
+            0,
+            0,
+            50,
+            56
+          ],
+          "fill": "#FFFFFF",
+          "width": 95,
+          "height": 106,
+          "stroke": {
+            "align": "center",
+            "thickness": 0.1,
+            "fill": "#FFFFFF"
+          }
+        }
+      ]
+    }
+  ],
+  "themes": {
+    "Mode": [
+      "Light",
+      "Dark"
+    ]
+  },
+  "variables": {
+    "--sidebar": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#E7E8E5"
+        },
+        {
+          "value": "#18181b",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--sidebar-foreground": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#666666"
+        },
+        {
+          "value": "#fafafa",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--sidebar-primary": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#18181b"
+        },
+        {
+          "value": "#18181b",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--sidebar-primary-foreground": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#fafafa"
+        },
+        {
+          "value": "#fafafa",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--sidebar-border": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#CBCCC9"
+        },
+        {
+          "value": "#ffffff1a",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--sidebar-accent": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#CBCCC9"
+        },
+        {
+          "value": "#2a2a30",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--sidebar-accent-foreground": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#18181b"
+        },
+        {
+          "value": "#fafafa",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--sidebar-ring": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#71717a"
+        },
+        {
+          "value": "#71717a",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--background": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F2F3F0"
+        },
+        {
+          "value": "#111111",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--foreground": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#111111"
+        },
+        {
+          "value": "#FFFFFF",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--card": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#FFFFFF"
+        },
+        {
+          "value": "#1A1A1A",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--card-foreground": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#111111"
+        },
+        {
+          "value": "#FFFFFF",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--popover": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#FFFFFF"
+        },
+        {
+          "value": "#1A1A1A",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--popover-foreground": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#111111"
+        },
+        {
+          "value": "#FFFFFF",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--primary": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#FF8400"
+        },
+        {
+          "value": "#FF8400",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--primary-foreground": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#111111"
+        },
+        {
+          "value": "#111111",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--secondary": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#E7E8E5"
+        },
+        {
+          "value": "#2E2E2E",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--secondary-foreground": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#111111"
+        },
+        {
+          "value": "#FFFFFF",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--muted": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F2F3F0"
+        },
+        {
+          "value": "#2E2E2E",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--muted-foreground": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#666666"
+        },
+        {
+          "value": "#B8B9B6",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--accent": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F2F3F0"
+        },
+        {
+          "value": "#111111",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--accent-foreground": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#111111"
+        },
+        {
+          "value": "#F2F3F0",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--destructive": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#D93C15"
+        },
+        {
+          "value": "#FF5C33",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--border": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#CBCCC9"
+        },
+        {
+          "value": "#2E2E2E",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--input": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#CBCCC9"
+        },
+        {
+          "value": "#2E2E2E",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--ring": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#666666"
+        },
+        {
+          "value": "#666666",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--white": {
+      "type": "color",
+      "value": "#FFFFFF"
+    },
+    "--black": {
+      "type": "color",
+      "value": "#000000"
+    },
+    "--font-primary": {
+      "type": "string",
+      "value": "JetBrains Mono"
+    },
+    "--font-secondary": {
+      "type": "string",
+      "value": "Geist"
+    },
+    "--radius-none": {
+      "type": "number",
+      "value": 0
+    },
+    "--radius-pill": {
+      "type": "number",
+      "value": 999
+    },
+    "--color-success": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#DFE6E1"
+        },
+        {
+          "value": "#222924",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--color-success-foreground": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#004D1A"
+        },
+        {
+          "value": "#B6FFCE",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--color-warning": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#E9E3D8"
+        },
+        {
+          "value": "#291C0F",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--color-warning-foreground": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#804200"
+        },
+        {
+          "value": "#FF8400",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--color-error": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#E5DCDA"
+        },
+        {
+          "value": "#24100B",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--color-error-foreground": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#8C1C00"
+        },
+        {
+          "value": "#FF5C33",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--color-info": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#DFDFE6"
+        },
+        {
+          "value": "#222229",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--color-info-foreground": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#000066"
+        },
+        {
+          "value": "#B2B2FF",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--radius-m": {
+      "type": "number",
+      "value": 16
+    }
+  }
+}
