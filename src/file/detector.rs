@@ -1,4 +1,5 @@
 use crate::types::NodeId;
+use tracing::{info, trace, warn};
 
 // 编码检测常量
 const SAMPLE_SIZE: usize = 8 * 1024;     // 采样大小：读取文件前 8KB
@@ -62,22 +63,24 @@ fn chardet_to_encoding(charset: &str) -> Option<String> {
 // ========================================
 
 /// 检测单个文件的编码
-/// 
+///
 /// 检测策略（按优先级）：
 /// 1. BOM 检测 — 检查文件头是否有已知 BOM
 /// 2. chardet 频率分析 — 读取前 8KB 进行字符频率统计
 /// 3. UTF-8 启发式 — 若 chardet 置信度不足，尝试按 UTF-8 解码
-/// 
+///
 /// # 参数
 /// - `node_id`: 文件节点 ID（用于返回结果关联）
 /// - `path`: 文件路径
+#[tracing::instrument]
 pub fn detect_encoding(node_id: NodeId, path: &std::path::Path) -> DetectionResult {
     use std::io::Read;
 
     // 打开文件，失败则返回 None
     let mut file = match std::fs::File::open(path) {
         Ok(f) => f,
-        Err(_) => {
+        Err(e) => {
+            warn!(?path, error = %e, "打开文件失败，无法检测编码");
             return DetectionResult {
                 node_id,
                 encoding: None,
@@ -100,6 +103,7 @@ pub fn detect_encoding(node_id: NodeId, path: &std::path::Path) -> DetectionResu
 
     // 策略 1: BOM 检测（最快最准确）
     if let Some(enc) = detect_bom(&buffer) {
+        info!(?path, encoding = %enc, "通过 BOM 检测到编码");
         return DetectionResult {
             node_id,
             encoding: Some(enc),
@@ -108,6 +112,7 @@ pub fn detect_encoding(node_id: NodeId, path: &std::path::Path) -> DetectionResu
 
     // 空文件默认当作 UTF-8
     if buffer.is_empty() {
+        trace!(?path, "文件为空，默认标记为 UTF-8");
         return DetectionResult {
             node_id,
             encoding: Some("UTF-8".to_string()),
@@ -116,18 +121,22 @@ pub fn detect_encoding(node_id: NodeId, path: &std::path::Path) -> DetectionResu
 
     // 策略 2: chardet 频率分析
     let (charset, confidence, _language) = chardet::detect(&buffer);
+    trace!(?path, raw_charset = %charset, confidence, "chardet 分析结果");
 
     if confidence >= CONFIDENCE_THRESHOLD {
         if let Some(enc) = chardet_to_encoding(&charset) {
+            info!(?path, encoding = %enc, confidence, "通过 chardet 检测到编码");
             return DetectionResult {
                 node_id,
                 encoding: Some(enc),
             };
         }
+        warn!(?path, raw_charset = %charset, confidence, "chardet 置信度足够但无法映射为已知编码");
     }
 
     // 策略 3: 启发式回退 — 尝试按 UTF-8 解码，成功则标记 UTF-8
     if std::str::from_utf8(&buffer).is_ok() {
+        info!(?path, "chardet 置信度不足，通过 UTF-8 启发式判定为 UTF-8");
         return DetectionResult {
             node_id,
             encoding: Some("UTF-8".to_string()),
@@ -135,6 +144,7 @@ pub fn detect_encoding(node_id: NodeId, path: &std::path::Path) -> DetectionResu
     }
 
     // 所有策略均失败
+    warn!(?path, "所有编码检测策略均失败");
     DetectionResult {
         node_id,
         encoding: None,

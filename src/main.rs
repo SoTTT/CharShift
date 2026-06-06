@@ -7,6 +7,7 @@ use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
 use tauri::ipc::Channel;
 use tokio::sync::Mutex;
+use tracing::{info, instrument, warn};
 
 // 引入文件处理模块和共享类型模块
 mod file;
@@ -28,14 +29,14 @@ struct DetectProgress {
 }
 
 /// 单个编码检测任务
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct DetectTask {
     pub id: u64,
     pub path: String,
 }
 
 /// 单个文件转换任务，携带扫描时的元数据用于一致性校验
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct ConvertTask {
     pub id: u64,
     pub path: String,
@@ -60,8 +61,10 @@ pub struct FileCheckResult {
 
 /// 打开原生目录选择对话框，返回用户选择的目录路径
 #[tauri::command]
+#[instrument]
 fn pick_directory() -> Result<Option<String>, String> {
     let path = rfd::FileDialog::new().pick_folder();
+    info!(selected = ?path, "用户选择目录");
     Ok(path.map(|p| p.to_string_lossy().to_string()))
 }
 
@@ -69,13 +72,19 @@ fn pick_directory() -> Result<Option<String>, String> {
 ///
 /// 在阻塞线程池中执行，避免阻塞 async runtime
 #[tauri::command]
+#[instrument]
 async fn scan_directory(path: String, exclude_binary: bool) -> Result<Vec<FileNode>, String> {
     let path = PathBuf::from(path);
+    info!(?path, exclude_binary, "开始扫描目录");
     // 目录扫描是 IO 密集型阻塞操作，放到 spawn_blocking 中执行
     let nodes =
         tokio::task::spawn_blocking(move || file::scanner::scan_directory(&path, exclude_binary))
             .await
             .map_err(|e| e.to_string())?;
+    match &nodes {
+        Ok(list) => info!(count = list.len(), "扫描完成"),
+        Err(e) => warn!(error = e, "扫描失败"),
+    }
     nodes
 }
 
@@ -83,7 +92,9 @@ async fn scan_directory(path: String, exclude_binary: bool) -> Result<Vec<FileNo
 ///
 /// 适用于文件数量较少的场景
 #[tauri::command]
+#[instrument]
 async fn detect_encodings(tasks: Vec<DetectTask>) -> Result<Vec<serde_json::Value>, String> {
+    info!(count = tasks.len(), "开始批量同步检测编码");
     let mut results = Vec::new();
     // 逐个顺序检测，适合少量文件
     for task in tasks {
@@ -93,6 +104,7 @@ async fn detect_encodings(tasks: Vec<DetectTask>) -> Result<Vec<serde_json::Valu
             "encoding": enc.encoding,
         }));
     }
+    info!(count = results.len(), "批量同步检测完成");
     Ok(results)
 }
 
@@ -100,12 +112,15 @@ async fn detect_encodings(tasks: Vec<DetectTask>) -> Result<Vec<serde_json::Valu
 ///
 /// 最大并发 16 个，适合大量文件场景，前端可实时更新进度条
 #[tauri::command]
+#[instrument(skip(on_progress))]
 async fn detect_encodings_stream(
     tasks: Vec<DetectTask>,
     on_progress: Channel<DetectProgress>,
 ) -> Result<(), String> {
     let total = tasks.len();
+    info!(total, "开始批量流式检测编码");
     if total == 0 {
+        info!("检测任务为空，直接返回");
         return Ok(());
     }
 
@@ -145,6 +160,7 @@ async fn detect_encodings_stream(
         let _ = h.await;
     }
 
+    info!(total, "批量流式检测完成");
     Ok(())
 }
 
@@ -152,12 +168,14 @@ async fn detect_encodings_stream(
 ///
 /// 最大并发 4 个，每个任务独立执行：校验 → 读取 → 解码 → 重新编码 → 原子写入
 #[tauri::command]
+#[instrument]
 async fn convert_files(
     tasks: Vec<ConvertTask>,
     target_encoding: String,
 ) -> Result<Vec<serde_json::Value>, String> {
     // 将目标编码字符串解析为 Encoding 枚举
     let target = parse_encoding(&target_encoding).ok_or("未知编码")?;
+    info!(count = tasks.len(), ?target_encoding, "开始批量转换文件编码");
     // 使用信号量限制并发数为 4，避免磁盘 IO 竞争
     let sem = std::sync::Arc::new(tokio::sync::Semaphore::new(4));
     let mut handles = Vec::new();
@@ -186,9 +204,13 @@ async fn convert_files(
                 expected_size,
                 expected_modified,
             );
+            let success = result.result.is_ok();
+            if !success {
+                warn!(id, ?path, error = ?result.result.as_ref().err(), "文件转换失败");
+            }
             serde_json::json!({
                 "id": result.node_id,
-                "success": result.result.is_ok(),
+                "success": success,
                 "error": result.result.err(),
             })
         });
@@ -202,12 +224,17 @@ async fn convert_files(
             results.push(r);
         }
     }
+    let success_count = results.iter().filter(|r| r["success"].as_bool().unwrap_or(false)).count();
+    let error_count = results.len() - success_count;
+    info!(total = results.len(), success_count, error_count, "批量转换完成");
     Ok(results)
 }
 
 /// 检查给定路径列表是否为文本文件（用于拖放时的快速筛选）
 #[tauri::command]
+#[instrument]
 fn check_text_files(paths: Vec<String>) -> Vec<FileCheckResult> {
+    info!(count = paths.len(), "开始检查拖放文件是否为文本文件");
     let mut results = Vec::new();
     for path_str in paths {
         let path = PathBuf::from(&path_str);
@@ -224,16 +251,21 @@ fn check_text_files(paths: Vec<String>) -> Vec<FileCheckResult> {
             is_text,
         });
     }
+    let text_count = results.iter().filter(|r| r.is_text).count();
+    info!(total = results.len(), text_count, "拖放文件检查完成");
     results
 }
 
 /// 获取所有支持的目标编码名称列表（供前端下拉框使用）
 #[tauri::command]
+#[instrument]
 fn get_available_encodings() -> Vec<String> {
-    Encoding::all()
+    let list: Vec<String> = Encoding::all()
         .into_iter()
         .map(|e| e.name().to_string())
-        .collect()
+        .collect();
+    info!(count = list.len(), ?list, "返回支持的编码列表");
+    list
 }
 
 /// 批量锁定文件（Windows 独占模式，其他平台占位）
@@ -242,8 +274,12 @@ async fn lock_files(
     paths: Vec<String>,
     locker: tauri::State<'_, Arc<Mutex<file::locker::FileLocker>>>,
 ) -> Result<Vec<file::locker::LockResult>, String> {
+    info!(count = paths.len(), "开始批量锁定文件");
     let mut lock = locker.lock().await;
     let results: Vec<_> = paths.iter().map(|p| lock.lock_file(Path::new(p))).collect();
+    let success_count = results.iter().filter(|r| r.success).count();
+    let fail_count = results.len() - success_count;
+    info!(success_count, fail_count, "批量锁定完成");
     Ok(results)
 }
 
@@ -253,10 +289,12 @@ async fn unlock_files(
     paths: Vec<String>,
     locker: tauri::State<'_, Arc<Mutex<file::locker::FileLocker>>>,
 ) -> Result<(), String> {
+    info!(count = paths.len(), "开始批量解锁文件");
     let mut lock = locker.lock().await;
     for p in paths {
         lock.unlock_file(Path::new(&p));
     }
+    info!("批量解锁完成");
     Ok(())
 }
 
@@ -265,8 +303,10 @@ async fn unlock_files(
 async fn unlock_all_files(
     locker: tauri::State<'_, Arc<Mutex<file::locker::FileLocker>>>,
 ) -> Result<(), String> {
+    info!("解锁所有已锁定文件");
     let mut lock = locker.lock().await;
     lock.unlock_all();
+    info!("全部解锁完成");
     Ok(())
 }
 
@@ -284,6 +324,12 @@ fn parse_encoding(name: &str) -> Option<Encoding> {
 // ========================================
 
 fn main() {
+    // 初始化 tracing 日志系统，支持通过环境变量 RUST_LOG 控制级别
+    let _ = tracing_subscriber::fmt()
+        .with_env_filter(tracing_subscriber::EnvFilter::from_default_env())
+        .try_init();
+    info!("CharShift 应用启动");
+
     // 创建全局文件锁管理器，通过 Tauri State 共享给所有命令
     let file_locker = Arc::new(Mutex::new(file::locker::FileLocker::new()));
 

@@ -1,4 +1,5 @@
 use std::path::Path;
+use tracing::{info, trace, warn};
 use walkdir::{WalkDir, DirEntry};
 use crate::types::{FileNode, NodeId, NodeType};
 
@@ -49,18 +50,20 @@ pub fn is_text_file(path: &Path) -> bool {
 // ========================================
 
 /// 递归扫描目录，返回文件树节点列表
-/// 
+///
 /// # 参数
 /// - `path`: 要扫描的根目录路径
 /// - `exclude_binary`: 是否跳过二进制文件
-/// 
+///
 /// # 扫描规则
 /// - 最大深度 20 层
 /// - 跳过隐藏文件和系统目录
 /// - 不跟随符号链接
 /// - 文本检测仅读前 512 字节
 /// - 超过 50000 个节点会报错
+#[tracing::instrument]
 pub fn scan_directory(path: &Path, exclude_binary: bool) -> Result<Vec<FileNode>, String> {
+    info!(?path, exclude_binary, "开始扫描目录");
     let mut nodes = Vec::new();
     let mut next_id: NodeId = 1;
 
@@ -71,12 +74,17 @@ pub fn scan_directory(path: &Path, exclude_binary: bool) -> Result<Vec<FileNode>
         .into_iter()
         .filter_entry(|e| {
             if is_system_dir(e) {
+                trace!(name = ?e.file_name(), "跳过系统目录");
                 return false;
             }
             if e.depth() == 0 {
                 return true;
             }
-            !is_hidden(e)
+            if is_hidden(e) {
+                trace!(name = ?e.file_name(), "跳过隐藏文件/目录");
+                return false;
+            }
+            true
         });
 
     // 创建根节点（id 固定为 0）
@@ -126,14 +134,18 @@ pub fn scan_directory(path: &Path, exclude_binary: bool) -> Result<Vec<FileNode>
             NodeType::Directory
         } else if metadata.is_file() {
             if is_text_file(&entry_path) {
+                trace!(?entry_path, "识别为文本文件");
                 NodeType::TextFile
             } else {
                 if exclude_binary {
+                    trace!(?entry_path, "排除二进制文件");
                     continue; // 开启"排除二进制"时跳过二进制文件
                 }
+                trace!(?entry_path, "识别为二进制文件");
                 NodeType::BinaryFile
             }
         } else {
+            trace!(?entry_path, "跳过特殊文件");
             continue; // 跳过特殊文件（FIFO、socket 等）
         };
 
@@ -175,6 +187,7 @@ pub fn scan_directory(path: &Path, exclude_binary: bool) -> Result<Vec<FileNode>
 
         // 节点数超限保护
         if nodes.len() > MAX_SCAN_NODES {
+            warn!(count = nodes.len(), max = MAX_SCAN_NODES, "扫描节点数超限");
             return Err(format!(
                 "目录中包含过多文件（超过 {} 个），请选择子目录进行扫描",
                 MAX_SCAN_NODES
@@ -182,5 +195,6 @@ pub fn scan_directory(path: &Path, exclude_binary: bool) -> Result<Vec<FileNode>
         }
     }
 
+    info!(text_files = nodes.iter().filter(|n| matches!(n.node_type, NodeType::TextFile)).count(), binary_files = nodes.iter().filter(|n| matches!(n.node_type, NodeType::BinaryFile)).count(), dirs = nodes.iter().filter(|n| matches!(n.node_type, NodeType::Directory)).count(), "扫描完成");
     Ok(nodes)
 }

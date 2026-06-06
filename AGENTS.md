@@ -57,6 +57,8 @@
 | `encoding_rs` / `encoding_rs_io` | 编码解码与转换 |
 | `filetime = "0.2"` | 恢复文件修改时间 |
 | `rfd = "0.14"` | 原生文件对话框（选目录） |
+| `tracing = "0.1"` | 结构化日志记录 |
+| `tracing-subscriber = "0.3"` | 日志输出与过滤（支持 `RUST_LOG` 环境变量） |
 
 ### 前端
 
@@ -207,9 +209,27 @@ Rust 后端实际支持的编码：
 
 ## 已知问题与待改进项
 
-1. **Rust 后端无日志输出**：代码中没有任何 `println!`/`eprintln!`，也未引入 `tracing` 或 `log` crate，运行时问题难以排查。前端使用 `console.error` / `console.warn` 输出异常。
-2. **配置持久化不完整**：`localStorage` 仅保存了 `excludeBinary`（排除二进制）和 `lockFiles`（锁定文件）两项开关，默认目标编码、窗口尺寸等其余状态未持久化。
-3. **无测试覆盖**：核心文件处理逻辑（扫描、检测、转换、锁定）缺乏任何自动化测试。
+1. **配置持久化不完整**：`localStorage` 仅保存了 `excludeBinary`（排除二进制）和 `lockFiles`（锁定文件）两项开关，默认目标编码、窗口尺寸等其余状态未持久化。
+2. **无测试覆盖**：核心文件处理逻辑（扫描、检测、转换、锁定）缺乏任何自动化测试。
+
+---
+
+## 日志系统
+
+后端已引入 `tracing` + `tracing-subscriber`，通过环境变量 `RUST_LOG` 控制日志级别。
+
+| 日志级别 | 适用场景 |
+|----------|----------|
+| `error` | 文件打开失败、写入失败、rename 失败等硬错误 |
+| `warn` | 一致性校验失败、编码映射失败、锁定失败、恢复修改时间失败 |
+| `info` | 命令入口/出口、扫描完成、转换完成、批量操作统计 |
+| `trace` | 跳过隐藏文件/系统目录、BOM 检测、临时文件路径、解码/编码过程 |
+
+启用方式（开发调试）：
+```bash
+RUST_LOG=info cargo tauri dev
+RUST_LOG=trace cargo run
+```
 
 ---
 
